@@ -293,26 +293,41 @@ function renderTable(schools,tier){
 
 // ========== 推荐引擎 ==========
 function generateAdvice(){
-  const d=getStudent();
-  const all=RECOMMEND_ENGINE.recommend(d.score,d.rank);
-  let html='<div class="advice-box">🎯 基于你489分/76054位次的推荐方案</div>';
-  ['冲','稳','保'].forEach(t=>{
-    if(all[t]&&all[t].length){html+=`<div class="rec-panel"><div class="rec-panel-header">${t==='冲'?'🟢 冲一冲':t==='稳'?'🟡 稳一稳':'🔵 保一保'}</div><div class="rec-panel-body">${renderTable(all[t].slice(0,5),t)}</div></div>`;}
-  });
-  document.getElementById('adviceOutput').innerHTML=html;
+  try{
+    const d=getStudent();
+    if(!window.RECOMMEND_ENGINE){document.getElementById('adviceOutput').innerHTML='<div class="advice-box">⚠️ 数据引擎加载失败，请刷新页面重试</div>';return;}
+    const all=window.RECOMMEND_ENGINE.recommend(d.score,d.rank);
+    if(!all){document.getElementById('adviceOutput').innerHTML='<div class="advice-box">⚠️ 推荐引擎返回空，请检查数据</div>';return;}
+    let html=`<div class="advice-box">🎯 基于${d.score}分/${d.rank}位次的推荐方案（广西本科通用）</div>`;
+    ['冲','稳','保'].forEach(t=>{
+      if(all[t]&&all[t].length){
+        html+=`<div class="rec-panel"><div class="rec-panel-header">${t==='冲'?'🟢 冲一冲':t==='稳'?'🟡 稳一稳':'🔵 保一保'}（${all[t].length}所）</div><div class="rec-panel-body">${renderTable(all[t].slice(0,5),t)}</div></div>`;
+      }
+    });
+    document.getElementById('adviceOutput').innerHTML=html||'<div class="advice-box">暂无推荐结果，请检查分数和位次是否正确</div>';
+  }catch(e){
+    document.getElementById('adviceOutput').innerHTML=`<div class="advice-box">⚠️ 推荐引擎出错：${e.message}。请刷新页面重试。</div>`;
+    console.error(e);
+  }
   switchTab('recommend');
 }
 
 function generateAll(){
-  const d=getStudent();
-  const all=RECOMMEND_ENGINE.recommend(d.score,d.rank);
-  let html='<div class="advice-box">📋 全部院校（不分档）</div><div class="rec-panel"><div class="rec-panel-body">';
-  const combined=[...(all['冲']||[]),...(all['稳']||[]),...(all['保']||[])];
-  html+=`<table class="rec-table"><tr><th>院校</th><th>类型</th><th>最低位次</th><th>档次</th></tr>${
-    combined.map(s=>`<tr><td><strong>${s.name}</strong></td><td>${s.type||'—'}</td><td>${s.minRank}</td><td><span class="rec-tag ${s.matchRate>60?'保':s.matchRate>30?'稳':'冲'}">${s.matchRate>60?'保底':s.matchRate>30?'稳妥':'冲刺'}</span></td></tr>`
-  ).join('')}</table>`;
-  html+='</div></div>';
-  document.getElementById('adviceOutput').innerHTML=html;
+  try{
+    const d=getStudent();
+    if(!window.RECOMMEND_ENGINE){return;}
+    const all=window.RECOMMEND_ENGINE.recommend(d.score,d.rank);
+    if(!all)return;
+    let html='<div class="advice-box">📋 全部院校（不分方向，共'+(all['冲'].length+all['稳'].length+all['保'].length)+'所）</div><div class="rec-panel"><div class="rec-panel-body">';
+    const combined=[...(all['冲']||[]),...(all['稳']||[]),...(all['保']||[])];
+    html+=`<table class="rec-table"><tr><th>院校</th><th>类型</th><th>所在地</th><th>最低位次</th><th>档次</th></tr>${
+      combined.map(s=>`<tr><td><strong>${s.name}</strong></td><td>${s.type||'—'}</td><td>${s.location||'—'}</td><td>${s.minRank}</td><td><span class="rec-tag ${s.matchRate>60?'保':s.matchRate>30?'稳':'冲'}">${s.matchRate>60?'保底':s.matchRate>30?'稳妥':'冲刺'}</span></td></tr>`
+    ).join('')}</table>`;
+    html+='</div></div>';
+    document.getElementById('adviceOutput').innerHTML=html;
+  }catch(e){
+    document.getElementById('adviceOutput').innerHTML=`<div class="advice-box">⚠️ ${e.message}</div>`;
+  }
   switchTab('recommend');
 }
 

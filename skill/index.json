@@ -1,5 +1,11 @@
 [
-  { "name": "guangxi-advisor", "label": "广西志愿顾问", "avatar": "gx" },
+  { "name": "guangxi-advisor", "label": "广西志愿顾问", "avatar": "桂" },
   { "name": "teacher-training", "label": "定向师范专家", "avatar": "师" },
-  { "name": "engineering", "label": "工科指导师", "avatar": "工" }
+  { "name": "engineering", "label": "工科指导师", "avatar": "工" },
+  { "name": "zhangxuefeng", "label": "张雪峰", "avatar": "雪" },
+  { "name": "balancer", "label": "平衡者", "avatar": "衡" },
+  { "name": "parent", "label": "家长视角", "avatar": "家" },
+  { "name": "career", "label": "职业规划师", "avatar": "职" },
+  { "name": "data-analyst", "label": "数据分析师", "avatar": "数" },
+  { "name": "biology-teacher", "label": "生物教师", "avatar": "教" }
 ]

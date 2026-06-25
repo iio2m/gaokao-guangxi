@@ -1,618 +1,555 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#27ae60">
-  <title>广西高考志愿助手 — GaokaoGX</title>
-  <meta name="description" content="专为广西2026高考生设计的志愿填报辅助工具，纯前端，无需注册，打开即用。">
-  <link rel="stylesheet" href="chat/style.css">
-  <!-- 数据引擎 -->
-  <script src="data/gaokao-data.js"></script>
-  <style>
-    /* 广西主题色覆盖 */
-    :root {
-      --primary: #27ae60;
-      --primary-light: #e8f8f0;
-      --primary-dark: #1e8449;
-    }
-    .brand-logo { background: linear-gradient(135deg, #27ae60, #2980b9); }
-    .sidebar-brand .brand-text { color: #27ae60; }
-    .brand-text span { color: #2980b9; }
-    .gx-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, #27ae60, #2980b9);
-      color: white;
-      padding: 2px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .tier-冲 .tier-badge { background: #ff6b6b; color: white; }
-    .tier-稳 .tier-badge { background: #f39c12; color: white; }
-    .tier-保 .tier-badge { background: #27ae60; color: white; }
-
-    /* 推荐面板样式 */
-    .rec-panel {
-      background: white;
-      border-radius: 12px;
-      border: 1px solid #e0e0e0;
-      overflow: hidden;
-      margin: 10px 0;
-    }
-    .rec-panel-header {
-      padding: 12px 16px;
-      font-weight: 700;
-      font-size: 15px;
-      border-bottom: 1px solid #e0e0e0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .rec-panel-body { padding: 12px 16px; }
-    .rec-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .rec-table th {
-      text-align: left;
-      padding: 6px 8px;
-      font-weight: 600;
-      color: #666;
-      font-size: 11px;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    .rec-table td {
-      padding: 8px;
-      border-bottom: 1px solid #f5f5f5;
-    }
-    .rec-table tr:last-child td { border-bottom: none; }
-
-    .rec-tag {
-      display: inline-block;
-      padding: 1px 8px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .rec-tag.冲 { background: #ffe0e0; color: #c0392b; }
-    .rec-tag.稳 { background: #fef3cd; color: #856404; }
-    .rec-tag.保 { background: #d4edda; color: #155724; }
-
-    /* 数据输入面板 */
-    .input-panel {
-      background: white;
-      border-radius: 12px;
-      border: 1px solid #e0e0e0;
-      padding: 16px;
-      margin: 10px 0;
-    }
-    .input-panel h3 {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: #333;
-    }
-
-    /* 功能标签页 */
-    .tabs {
-      display: flex;
-      border-bottom: 2px solid #e0e0e0;
-      margin-bottom: 16px;
-    }
-    .tab {
-      padding: 10px 20px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #666;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      transition: all 0.2s;
-    }
-    .tab.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
-    }
-    .tab:hover { color: var(--primary); }
-
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    /* 考生画像卡片 */
-    .profile-card {
-      background: linear-gradient(135deg, #e8f8f0, #e8f0fe);
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin: 10px 0;
-    }
-    .profile-card .row {
-      display: flex;
-      justify-content: space-between;
-      padding: 4px 0;
-      font-size: 13px;
-    }
-    .profile-card .label { color: #666; }
-    .profile-card .value { font-weight: 600; }
-
-    .score-bar {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin: 8px 0;
-    }
-    .score-item {
-      flex: 1;
-      min-width: 60px;
-      text-align: center;
-      padding: 6px 4px;
-      border-radius: 8px;
-      font-size: 12px;
-    }
-    .score-item .sub { color: #666; font-size: 10px; }
-    .score-item .num { font-weight: 700; font-size: 16px; }
-    .score-item.good { background: #d4edda; }
-    .score-item.ok { background: #fef3cd; }
-    .score-item.weak { background: #ffe0e0; }
-    .score-item.good .num { color: #155724; }
-    .score-item.ok .num { color: #856404; }
-    .score-item.weak .num { color: #c0392b; }
-
-    .advice-box {
-      background: #fff8e1;
-      border-left: 4px solid #f39c12;
-      padding: 12px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      line-height: 1.7;
-      white-space: pre-wrap;
-      margin: 8px 0;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#27ae60">
+<title>广西高考志愿助手 — GaokaoGX</title>
+<meta name="description" content="专为广西2026高考生设计的志愿填报辅助工具，含AI角色对话+冲稳保推荐引擎。">
+<link rel="stylesheet" href="chat/style.css">
+<script src="data/gaokao-data.js"></script>
+<style>
+:root{--primary:#27ae60;--primary-light:#e8f8f0;--primary-dark:#1e8449;--gx-green:#27ae60;--gx-blue:#2980b9}
+.brand-logo{background:linear-gradient(135deg,#27ae60,#2980b9)}
+.gx-badge{display:inline-block;background:linear-gradient(135deg,#27ae60,#2980b9);color:white;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.tier-冲 .tier-badge{background:#ff6b6b;color:white}
+.tier-稳 .tier-badge{background:#f39c12;color:white}
+.tier-保 .tier-badge{background:#27ae60;color:white}
+.rec-panel{background:white;border-radius:12px;border:1px solid #e0e0e0;overflow:hidden;margin:10px 0}
+.rec-panel-header{padding:12px 16px;font-weight:700;font-size:15px;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;gap:8px}
+.rec-panel-body{padding:12px 16px}
+.rec-table{width:100%;border-collapse:collapse;font-size:13px}
+.rec-table th{text-align:left;padding:6px 8px;font-weight:600;color:#666;font-size:11px;border-bottom:1px solid #f0f0f0}
+.rec-table td{padding:8px;border-bottom:1px solid #f5f5f5}
+.rec-table tr:last-child td{border-bottom:none}
+.rec-tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.rec-tag.冲{background:#ffe0e0;color:#c0392b}
+.rec-tag.稳{background:#fef3cd;color:#856404}
+.rec-tag.保{background:#d4edda;color:#155724}
+.input-panel{background:white;border-radius:12px;border:1px solid #e0e0e0;padding:16px;margin:10px 0}
+.input-panel h3{font-size:14px;font-weight:600;margin-bottom:12px;color:#333}
+.tabs{display:flex;border-bottom:2px solid #e0e0e0;margin-bottom:16px;background:white;border-radius:12px 12px 0 0}
+.tab{padding:10px 20px;font-size:14px;font-weight:500;color:#666;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;user-select:none}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab:hover{color:var(--primary)}
+.tab-content{display:none;flex:1;overflow-y:auto;padding:0}
+.tab-content.active{display:flex;flex-direction:column}
+.profile-card{background:linear-gradient(135deg,#e8f8f0,#e8f0fe);border-radius:12px;padding:14px 16px;margin:0 0 12px}
+.profile-card .row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}
+.profile-card .label{color:#666}
+.profile-card .value{font-weight:600}
+.score-bar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.score-item{flex:1;min-width:60px;text-align:center;padding:6px 4px;border-radius:8px;font-size:12px}
+.score-item .sub{color:#666;font-size:10px}
+.score-item .num{font-weight:700;font-size:16px}
+.score-item.good{background:#d4edda}
+.score-item.ok{background:#fef3cd}
+.score-item.weak{background:#ffe0e0}
+.score-item.good .num{color:#155724}
+.score-item.ok .num{color:#856404}
+.score-item.weak .num{color:#c0392b}
+.advice-box{background:#fff8e1;border-left:4px solid #f39c12;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.7;white-space:pre-wrap;margin:8px 0}
+.chat-container{flex:1;display:flex;flex-direction:column;height:100%;overflow:hidden}
+.chat-messages{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:12px}
+.chat-msg{display:flex;gap:10px;max-width:88%}
+.chat-msg.user{align-self:flex-end;flex-direction:row-reverse}
+.chat-msg.assistant{align-self:flex-start}
+.chat-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.chat-msg.assistant .chat-avatar{background:var(--primary-light);color:var(--primary)}
+.chat-msg.user .chat-avatar{background:var(--primary);color:white}
+.chat-bubble{padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.7;white-space:pre-wrap}
+.chat-msg.assistant .chat-bubble{background:var(--card-bg);border:1px solid var(--border);border-top-left-radius:4px}
+.chat-msg.user .chat-bubble{background:var(--primary);color:white;border-top-right-radius:4px}
+.chat-input-area{padding:12px 20px 16px;border-top:1px solid var(--border);background:var(--card-bg)}
+.chat-input{width:100%;min-height:44px;max-height:120px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit;resize:none;outline:none;transition:var(--transition)}
+.chat-input:focus{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-light)}
+.chat-footer{display:flex;align-items:center;gap:8px;margin-top:8px}
+.typing-dots{display:flex;gap:4px;padding:8px 0}
+.typing-dots span{width:8px;height:8px;border-radius:50%;background:#999;animation:typing 1.4s infinite both}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes typing{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+.skill-tip{font-size:11px;color:#999;padding:4px 20px;text-align:center;border-bottom:1px solid #f0f0f0}
+.empty-chat{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:#999;padding:40px}
+.empty-chat .icon{font-size:48px;margin-bottom:12px}
+.empty-chat p{font-size:14px;line-height:1.6;text-align:center}
+@media(max-width:768px){.sidebar{display:none}.sidebar.open{display:flex;position:fixed;inset:0;z-index:100;width:100%}}
+</style>
 </head>
 <body>
-<div id="loader-bar">
-  <div class="bar" style="width:60%"></div>
-  <div class="text">🍀 广西高考志愿助手加载中...</div>
-</div>
-
+<div id="loader-bar"><div class="bar" style="width:50%"></div><div class="text">🍀 广西高考志愿助手加载中...</div></div>
 <div class="app">
-  <!-- ===== 侧栏 ===== -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-brand">
-        <span class="brand-logo">桂</span>
-        <span class="brand-text">Gaokao<span>GX</span></span>
-        <span class="version-tag">v1.0</span>
-      </div>
+
+<!-- ===== 侧栏 ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-brand">
+      <span class="brand-logo">桂</span>
+      <span class="brand-text">Gaokao<span style="color:#2980b9;">GX</span></span>
+      <span class="version-tag">v1.1</span>
     </div>
-
-    <div class="skill-section">
-      <div class="section-label">🤖 AI 角色</div>
-      <div class="skill-list" id="skillList">
-        <button class="skill-item active" data-skill="guangxi-advisor">
-          <span class="skill-avatar">桂</span>
-          <span>广西志愿顾问</span>
-        </button>
-        <button class="skill-item" data-skill="teacher-training">
-          <span class="skill-avatar">师</span>
-          <span>定向师范专家</span>
-        </button>
-        <button class="skill-item" data-skill="engineering">
-          <span class="skill-avatar">工</span>
-          <span>工科指导师</span>
-        </button>
-      </div>
-
-      <div class="section-label" style="margin-top:16px;">📊 志愿工具</div>
-      <div class="skill-list">
-        <button class="skill-item" onclick="switchTab('recommend')">
-          <span class="skill-avatar" style="background:linear-gradient(135deg,#27ae60,#2980b9);">推</span>
-          <span>冲稳保推荐引擎</span>
-        </button>
-        <button class="skill-item" onclick="switchTab('data')">
-          <span class="skill-avatar" style="background:linear-gradient(135deg,#8e44ad,#3498db);">编</span>
-          <span>编辑我的信息</span>
-        </button>
-      </div>
+  </div>
+  <div class="skill-section">
+    <div class="section-label">🤖 AI 角色</div>
+    <div class="skill-list" id="skillList"></div>
+    <div class="section-label" style="margin-top:16px;">📊 工具</div>
+    <div class="skill-list">
+      <button class="skill-item" data-tab="recommend"><span class="skill-avatar" style="background:linear-gradient(135deg,#27ae60,#2980b9);">推</span><span>冲稳保推荐</span></button>
+      <button class="skill-item" data-tab="data"><span class="skill-avatar" style="background:linear-gradient(135deg,#8e44ad,#3498db);">编</span><span>编辑信息</span></button>
     </div>
+  </div>
+  <div class="sidebar-footer">
+    <span class="gx-badge">广西2026</span>
+    <span style="font-size:11px;color:#999;">物理类 · 489分</span>
+  </div>
+</aside>
 
-    <div class="sidebar-footer">
-      <span class="gx-badge">广西2026</span>
-      <span style="font-size:11px;color:#999;">物理类 · 489分</span>
+<!-- ===== 主区域 ===== -->
+<main class="chat-main">
+  <div class="chat-header">
+    <button class="btn btn-icon mobile-toggle" id="mobileToggle" onclick="toggleS()">☰</button>
+    <div class="chat-header-info">
+      <h1 id="pageTitle">🎯 冲稳保推荐引擎</h1>
+      <p class="chat-header-subtitle" id="pageSubtitle">广西2026物理类 · 基于位次法智能推荐</p>
     </div>
-  </aside>
+    <button class="btn btn-icon" onclick="openSet()" title="设置 API">⚙️</button>
+  </div>
 
-  <!-- ===== 主区域 ===== -->
-  <main class="chat-main">
-    <!-- 头部 -->
-    <div class="chat-header">
-      <button class="btn btn-icon mobile-toggle" id="mobileToggle" onclick="toggleSidebar()">☰</button>
-      <div class="chat-header-info">
-        <h1 id="pageTitle">🎯 冲稳保推荐引擎</h1>
-        <p class="chat-header-subtitle">广西2026物理类 · 基于位次法智能推荐</p>
-      </div>
-      <button class="btn btn-icon" onclick="openSettings()" title="设置API">⚙️</button>
+  <!-- ===== TAB: 推荐引擎 ===== -->
+  <div class="tab-content active" id="tab-recommend" style="padding:20px;overflow-y:auto;">
+    <div class="profile-card" id="profileCard">
+      <div style="font-weight:600;font-size:14px;margin-bottom:8px;">👩‍🎓 考生画像</div>
+      <div class="row"><span class="label">广西 · 玉林博白 · 物理类 · 女生</span><span class="value">普通工人家庭</span></div>
+      <div class="row"><span class="label">总分 / 位次</span><span class="value" style="font-size:18px;color:var(--primary);" id="dispScore">489分 / 76054名</span></div>
+      <div class="row"><span class="label">本科线差 / 特控线差</span><span class="value"><span style="color:#27ae60;">+121分</span> · <span style="color:#e67e22;">-21分</span></span></div>
+      <div class="score-bar" id="scoreBar"></div>
     </div>
-
-    <!-- 消息区（AI聊天用） -->
-    <div class="messages" id="messages" style="display:none;">
-      <div class="message assistant">
-        <span class="message-avatar">桂</span>
-        <div class="message-bubble">你好！我是广西高考志愿顾问，请输入你的问题~</div>
-      </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="genFull()">🎯 生成完整方案</button>
+      <button class="btn" onclick="genTeacher()">📚 定向师范</button>
+      <button class="btn" onclick="genEngineer()">🔧 只看工科</button>
     </div>
+    <div id="adviceOutput"></div>
+  </div>
 
-    <!-- ===== 推荐引擎页面 ===== -->
-    <div class="tab-content active" id="tab-recommend" style="flex:1;overflow-y:auto;padding:20px;">
-      <!-- 考生画像 -->
-      <div class="profile-card" id="profileCard">
-        <div style="font-weight:600;font-size:14px;margin-bottom:8px;">👩‍🎓 考生画像</div>
-        <div class="row"><span class="label">广西 · 玉林市博白县 · 物理类</span><span class="value">2026年</span></div>
-        <div class="row"><span class="label">总分 / 位次</span><span class="value" style="font-size:18px;">489分 / 76054名</span></div>
-        <div class="row"><span class="label">本科线差</span><span class="value" style="color:#27ae60;">+121分</span></div>
-        <div class="row"><span class="label">特控线差</span><span class="value" style="color:#e67e22;">-21分</span></div>
-        <div class="score-bar" id="scoreBar">
-          <div class="score-item good"><div class="sub">生物</div><div class="num">80</div></div>
-          <div class="score-item good"><div class="sub">英语</div><div class="num">113</div></div>
-          <div class="score-item ok"><div class="sub">语文</div><div class="num">102</div></div>
-          <div class="score-item ok"><div class="sub">化学</div><div class="num">70</div></div>
-          <div class="score-item weak"><div class="sub">数学</div><div class="num">74</div></div>
-          <div class="score-item weak"><div class="sub">物理</div><div class="num">50</div></div>
+  <!-- ===== TAB: AI对话 ===== -->
+  <div class="tab-content" id="tab-chat">
+    <div class="chat-container">
+      <div class="skill-tip" id="skillTip">当前角色：广西志愿顾问</div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="empty-chat" id="emptyChat">
+          <div class="icon">💬</div>
+          <p>选择一个 AI 角色开始对话<br>或在设置中配置 API Key</p>
         </div>
       </div>
-
-      <!-- 操作按钮 -->
-      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
-        <button class="btn btn-primary" onclick="generateAdvice()">🎯 生成志愿方案</button>
-        <button class="btn" onclick="generateTeacherOnly()">📚 只看定向师范</button>
-        <button class="btn" onclick="generateEngineerOnly()">🔧 只看工科</button>
-      </div>
-
-      <!-- 建议输出区 -->
-      <div id="adviceOutput"></div>
-    </div>
-
-    <!-- ===== 编辑信息页面 ===== -->
-    <div class="tab-content" id="tab-data" style="flex:1;overflow-y:auto;padding:20px;">
-      <div class="input-panel">
-        <h3>📝 编辑我的信息</h3>
-        <div class="form-row">
-          <div class="form-group">
-            <label>总分</label>
-            <input type="number" id="editScore" value="489" min="0" max="750">
-          </div>
-          <div class="form-group">
-            <label>位次</label>
-            <input type="number" id="editRank" value="76054" min="0" max="200000">
-          </div>
+      <div class="chat-input-area">
+        <textarea class="chat-input" id="chatInput" rows="1" placeholder="输入你的问题..." disabled></textarea>
+        <div class="chat-footer">
+          <button class="btn btn-web-search" id="webBtn" onclick="toggleWeb()">🔍 <span id="webLabel">联网</span></button>
+          <button class="btn btn-send" id="sendBtn" onclick="sendMsg()" disabled>发送</button>
+          <button class="btn" id="stopBtn" onclick="stopStream()" style="display:none;">⏹ 停止</button>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>语文</label>
-            <input type="number" id="editChinese" value="102" min="0" max="150">
-          </div>
-          <div class="form-group">
-            <label>数学</label>
-            <input type="number" id="editMath" value="74" min="0" max="150">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>英语</label>
-            <input type="number" id="editEnglish" value="113" min="0" max="150">
-          </div>
-          <div class="form-group">
-            <label>物理</label>
-            <input type="number" id="editPhysics" value="50" min="0" max="150">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>化学</label>
-            <input type="number" id="editChem" value="70" min="0" max="150">
-          </div>
-          <div class="form-group">
-            <label>生物</label>
-            <input type="number" id="editBio" value="80" min="0" max="150">
-          </div>
-        </div>
-        <button class="btn btn-primary" onclick="saveEdit()" style="margin-top:8px;">💾 保存并更新推荐</button>
       </div>
     </div>
+  </div>
 
-    <!-- AI聊天输入区（隐藏，用推荐引擎代替） -->
-    <div class="input-area" id="chatInputArea" style="display:none;">
-      <textarea class="chat-input" id="chatInput" rows="1" placeholder="输入你的问题..." disabled></textarea>
-      <div class="input-footer">
-        <button class="btn btn-web-search" id="webSearchBtn">🔍 联网</button>
-        <button class="btn btn-send" id="sendBtn" disabled>发送</button>
-      </div>
+  <!-- ===== TAB: 编辑信息 ===== -->
+  <div class="tab-content" id="tab-data" style="padding:20px;overflow-y:auto;">
+    <div class="input-panel">
+      <h3>📝 编辑我的信息</h3>
+      <div class="form-row"><div class="form-group"><label>总分</label><input type="number" id="eScore" value="489"></div><div class="form-group"><label>位次</label><input type="number" id="eRank" value="76054"></div></div>
+      <div class="form-row"><div class="form-group"><label>语文</label><input type="number" id="eChinese" value="102"></div><div class="form-group"><label>数学</label><input type="number" id="eMath" value="74"></div></div>
+      <div class="form-row"><div class="form-group"><label>英语</label><input type="number" id="eEnglish" value="113"></div><div class="form-group"><label>物理</label><input type="number" id="ePhysics" value="50"></div></div>
+      <div class="form-row"><div class="form-group"><label>化学</label><input type="number" id="eChem" value="70"></div><div class="form-group"><label>生物</label><input type="number" id="eBio" value="80"></div></div>
+      <button class="btn btn-primary" onclick="saveData()" style="margin-top:8px;">💾 保存</button>
     </div>
-  </main>
+  </div>
+</main>
 </div>
 
 <!-- 设置弹窗 -->
-<div class="modal-overlay" id="settingsModal">
+<div class="modal-overlay" id="setModal">
   <div class="modal">
-    <div class="modal-header">
-      <h2>⚙️ 设置 AI API</h2>
-      <button class="modal-close" onclick="closeSettings()">&times;</button>
-    </div>
+    <div class="modal-header"><h2>⚙️ 设置</h2><button class="modal-close" onclick="closeSet()">&times;</button></div>
     <div class="modal-body">
-      <p style="font-size:13px;color:#666;margin-bottom:12px;">配置 AI 服务商后，可以与 AI 角色对话获取建议。如只需使用冲稳保推荐引擎，则无需配置。</p>
-      <div class="form-group">
-        <label>选择 AI 服务商</label>
+      <p style="font-size:13px;color:#666;margin-bottom:12px;">配置 AI API Key 后可使用 AI 角色对话功能。Key 仅存本地浏览器，不会上传任何服务器。</p>
+      <div class="form-group"><label>选择 AI</label>
         <select id="apiProvider" style="width:100%;padding:8px;border:1px solid #dadce0;border-radius:8px;font-size:14px;">
-          <option value="deepseek">DeepSeek V4 Flash</option>
-          <option value="glm_free">GLM-4-Flash（免费）</option>
+          <option value="deepseek">🥇 DeepSeek V4 Flash（推荐）</option>
+          <option value="glm_free">🆓 GLM-4-Flash（完全免费）</option>
         </select>
       </div>
-      <div class="form-group">
-        <label>API Key</label>
-        <input type="password" id="apiKey" placeholder="输入你的 API Key..." style="width:100%;">
+      <div class="form-group"><label>API Key</label><input type="password" id="apiKey" placeholder="输入 API Key..." style="width:100%;padding:8px;border:1px solid #dadce0;border-radius:8px;"></div>
+      <button class="btn btn-primary" onclick="saveKey()">💾 保存</button>
+      <div class="advice-box" style="margin-top:12px;font-size:12px;">
+        🔒 <strong>API Key 安全说明</strong><br>
+        · Key 只存在你浏览器本地（localStorage）<br>
+        · 浏览器直连 AI 厂商 API，不经过任何中间服务器<br>
+        · 不会上传到 GitHub 或被其他人获取<br>
+        · 清除浏览器缓存会删除 Key，需重新配置
       </div>
-      <button class="btn btn-primary" onclick="saveApiKey()">保存</button>
-      <p style="font-size:11px;color:#999;margin-top:8px;">API Key 仅保存在浏览器本地，不会上传到任何服务器。</p>
     </div>
   </div>
 </div>
 
 <script>
 // ============================================================
-// 应用逻辑
+// 状态
 // ============================================================
+let currentSkill = null;
+let currentSkillLabel = '广西志愿顾问';
+let isStreaming = false;
+let abortController = null;
+let webSearch = false;
 
-// --- 侧栏切换 ---
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-}
+const SKILL_INDEX = [
+  {name:'guangxi-advisor',label:'广西志愿顾问'},
+  {name:'teacher-training',label:'定向师范专家'},
+  {name:'engineering',label:'工科指导师'},
+  {name:'zhangxuefeng',label:'张雪峰'},
+  {name:'balancer',label:'平衡者'},
+  {name:'parent',label:'家长视角'},
+  {name:'career',label:'职业规划师'},
+  {name:'data-analyst',label:'数据分析师'},
+  {name:'biology-teacher',label:'生物教师'}
+];
 
-// --- 标签页切换 ---
-function switchTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  
-  const titles = { recommend: '🎯 冲稳保推荐引擎', data: '📝 编辑我的信息' };
-  document.getElementById('pageTitle').textContent = titles[tab] || '广西高考志愿助手';
-  
-  // 移动端关闭侧栏
+const SKILL_PROMPTS = {
+  'guangxi-advisor': '你是广西高考志愿填报专家，熟悉广西新高考政策。考生信息：广西2026物理类女生，总分489分（语文102数学74英语113物理50化学70生物80），位次76054，玉林博白人，普通工人家庭。想报定向师范或工科。请根据她的情况给出具体建议。',
+  'teacher-training': '你是广西定向师范招生专家。考生信息：广西2026物理类女生，489分/76054位次。想报定向师范。请分析她适合报哪些学校（玉林师范学院、河池学院、广西民族师范学院等），推荐什么专业方向（生物科学师范最适合）。强调免学费包分配有编制的优势。',
+  'engineering': '你是工科就业指导专家。考生生物80英语113较好，数学74物理50较弱。她想学电气自动化/机械/电子信息。你的建议：数学物理较弱学纯工科会很吃力，推荐食品工程/制药工程等对数学要求不高的方向。不建议机械电气。',
+  'zhangxuefeng': '你是张雪峰。考生：广西物理类489分/76054位次，女生，工人家庭。你的核心建议：1.定向师范是最优解，免学费有编制 2.数学74物理50学工科是找死 3.生物80适合生物师范 4.普通家庭孩子先考虑吃饭再考虑热爱。说话要犀利带金句。',
+  'balancer': '你是理性分析者。考生情况：广西物理类489分。分析：1.定向师范优势（免学费包分配）和劣势（农村任教6年）并存 2.工科薪资高但数理是短板 3.折中可选制药工程/生物技术。客观中立不带偏见。',
+  'parent': '你是一位广西普通工人家庭的家长，女儿高考489分。你最关心：学费贵不贵？工作稳不稳？女孩子安不安全？你不太懂专业名称，但希望孩子过得好。说话朴实接地气。',
+  'career': '你是职业规划师。分析考生：489分/76054位次，生物80英语113强项，数学74物理50弱项。师范路径：稳定有编制，可考研提升。工科路径：推荐食品/制药，不推荐机械/电气。长期建议：大学学好英语，考资格证书。',
+  'data-analyst': '你是数据分析师。数据：广西2026物理类考生约18万，位次76054（前42%）。定向师范匹配度：玉林师范77000✅，河池学院88000✅。工科匹配度：北部湾大学80000，桂林航天83000。结论：定向师范录取概率更高。用数据说话。',
+  'biology-teacher': '你是一位高中生物教师。考生生物80分是强项。你分享学生物师范的真实体验：课程有植物学动物学遗传学，不需要强数学物理。实习教学生很有趣。当老师累但有成就感。像学姐一样亲切分享。'
+};
+
+// ============================================================
+// 侧栏 & 标签
+// ============================================================
+function toggleS(){document.getElementById('sidebar').classList.toggle('open')}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
+  const el = document.getElementById('tab-'+tab);
+  if(el) el.classList.add('active');
+  const titles = {recommend:['🎯 冲稳保推荐引擎','广西2026物理类 · 基于位次法智能推荐'],
+    chat:['💬 AI 角色对话','当前角色：'+currentSkillLabel],
+    data:['📝 编辑我的信息','修改后点击保存即可更新']};
+  if(titles[tab]){document.getElementById('pageTitle').textContent=titles[tab][0];document.getElementById('pageSubtitle').textContent=titles[tab][1];}
   document.getElementById('sidebar').classList.remove('open');
 }
 
-// --- 获取当前学生数据 ---
-function getStudentData() {
-  return {
-    score: parseInt(document.getElementById('editScore').value) || 489,
-    rank: parseInt(document.getElementById('editRank').value) || 76054,
-    scores: {
-      语文: parseInt(document.getElementById('editChinese').value) || 102,
-      数学: parseInt(document.getElementById('editMath').value) || 74,
-      英语: parseInt(document.getElementById('editEnglish').value) || 113,
-      物理: parseInt(document.getElementById('editPhysics').value) || 50,
-      化学: parseInt(document.getElementById('editChem').value) || 70,
-      生物: parseInt(document.getElementById('editBio').value) || 80
+// ============================================================
+// AI 聊天
+// ============================================================
+function selectSkill(name,label){
+  currentSkill=name;
+  currentSkillLabel=label;
+  document.querySelectorAll('#skillList .skill-item').forEach(e=>e.classList.remove('active'));
+  const btn = document.querySelector(`#skillList .skill-item[data-skill="${name}"]`);
+  if(btn) btn.classList.add('active');
+  document.getElementById('skillTip').textContent='当前角色：'+label;
+  switchTab('chat');
+  addMsg('assistant',getGreeting(name));
+  checkApiReady();
+}
+
+function getGreeting(name){
+  const g={
+    'guangxi-advisor':'你好！我是广西高考志愿顾问。请告诉我你的问题，我会根据你的分数位次给出具体建议。',
+    'teacher-training':'你好！我是定向师范招生专家。广西定向师范免学费、包分配、有编制，你想了解哪个学校？',
+    'engineering':'你好！我是工科指导师。你想了解工科专业的就业前景还是课程难度？',
+    'zhangxuefeng':'来，孩子，跟我说说你啥情况。我张雪峰说话直，但句句是为你好。',
+    'balancer':'你好，我是平衡者。我会从多个角度帮你分析，不偏不倚。',
+    'parent':'闺女啊，爸/妈也不太懂这些，就想问问你学这个以后能找到稳定工作不？',
+    'career':'你好！我是职业规划师。我们可以从就业前景和你的能力匹配度来聊聊专业选择。',
+    'data-analyst':'你好，我是数据分析师。用数据说话，不拍脑袋给建议。',
+    'biology-teacher':'同学你好！我是学生物出身的高中老师，有什么想问的吗？'
+  };
+  return g[name]||'你好！请说出你的问题。';
+}
+
+function addMsg(role,content){
+  const container = document.getElementById('chatMessages');
+  const empty = document.getElementById('emptyChat');
+  if(empty) empty.style.display='none';
+  const div = document.createElement('div');
+  div.className='chat-msg '+role;
+  const avatar = role==='assistant' ? (currentSkillLabel.charAt(0)||'AI') : '我';
+  div.innerHTML=`<span class="chat-avatar">${avatar}</span><div class="chat-bubble">${content}</div>`;
+  container.appendChild(div);
+  container.scrollTop=container.scrollHeight;
+}
+
+function addTyping(){
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className='chat-msg assistant';
+  div.id='typingIndicator';
+  div.innerHTML='<span class="chat-avatar">'+(currentSkillLabel.charAt(0)||'AI')+'</span><div class="chat-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+  container.appendChild(div);
+  container.scrollTop=container.scrollHeight;
+}
+
+function removeTyping(){
+  const el = document.getElementById('typingIndicator');
+  if(el) el.remove();
+}
+
+async function sendMsg(){
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if(!msg||isStreaming) return;
+  
+  if(!currentSkill){
+    alert('请先在左侧选择一个 AI 角色');
+    return;
+  }
+  
+  const key = localStorage.getItem('gxApiKey');
+  const provider = localStorage.getItem('gxApiProvider')||'deepseek';
+  if(!key){
+    alert('请先在设置中配置 API Key');
+    openSet();
+    return;
+  }
+
+  input.value='';
+  addMsg('user',msg);
+  addTyping();
+  isStreaming=true;
+  document.getElementById('sendBtn').disabled=true;
+  document.getElementById('stopBtn').style.display='inline-flex';
+
+  try{
+    const prompt = SKILL_PROMPTS[currentSkill]||'你是一个高考志愿填报助手。';
+    const fullPrompt = prompt+'\n\n考生提问：'+msg+'\n\n请根据以上考生信息给出具体建议。如果是推荐院校，请结合广西2026年分数线（物理类本科线368，特控线510）和位次76054来分析。';
+    
+    let answer='';
+    
+    if(provider==='glm_free'){
+      // GLM-4-Flash 免费 API
+      const resp = await fetch('https://open.bigmodel.cn/api/paas/v4/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+        body:JSON.stringify({
+          model:'glm-4-flash',
+          messages:[{role:'user',content:fullPrompt}],
+          stream:false
+        })
+      });
+      const data = await resp.json();
+      answer = data.choices?.[0]?.message?.content||'抱歉，请求失败：'+JSON.stringify(data);
+    } else {
+      // DeepSeek API
+      abortController = new AbortController();
+      const resp = await fetch('https://api.deepseek.com/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+        body:JSON.stringify({
+          model:'deepseek-chat',
+          messages:[{role:'user',content:fullPrompt}],
+          stream:false,
+          temperature:0.7,
+          max_tokens:2048
+        }),
+        signal:abortController.signal
+      });
+      const data = await resp.json();
+      answer = data.choices?.[0]?.message?.content||'抱歉，请求失败：'+JSON.stringify(data);
     }
+    
+    removeTyping();
+    if(answer) addMsg('assistant',answer);
+
+  } catch(e){
+    removeTyping();
+    if(e.name==='AbortError') addMsg('assistant','⏹ 已停止生成');
+    else addMsg('assistant','❌ 请求失败：'+e.message);
+  }
+  
+  isStreaming=false;
+  document.getElementById('sendBtn').disabled=false;
+  document.getElementById('stopBtn').style.display='none';
+}
+
+function stopStream(){
+  if(abortController){abortController.abort();abortController=null;}
+}
+
+function checkApiReady(){
+  const key = localStorage.getItem('gxApiKey');
+  document.getElementById('chatInput').disabled=!key;
+  document.getElementById('sendBtn').disabled=!key;
+}
+
+function toggleWeb(){
+  webSearch=!webSearch;
+  document.getElementById('webBtn').style.borderColor=webSearch?'var(--success)':'';
+  document.getElementById('webLabel').textContent=webSearch?'已联网':'联网';
+}
+
+// ============================================================
+// 推荐引擎
+// ============================================================
+function getData(){
+  return {
+    score:parseInt(document.getElementById('eScore').value)||489,
+    rank:parseInt(document.getElementById('eRank').value)||76054,
+    scores:{语文:parseInt(document.getElementById('eChinese').value)||102,数学:parseInt(document.getElementById('eMath').value)||74,英语:parseInt(document.getElementById('eEnglish').value)||113,物理:parseInt(document.getElementById('ePhysics').value)||50,化学:parseInt(document.getElementById('eChem').value)||70,生物:parseInt(document.getElementById('eBio').value)||80}
   };
 }
 
-// --- 保存编辑 ---
-function saveEdit() {
-  const data = getStudentData();
-  localStorage.setItem('gxStudentData', JSON.stringify(data));
-  updateProfileCard(data);
-  alert('✅ 信息已保存！点击"生成志愿方案"查看推荐。');
+function updateProfile(data){
+  const s=data.scores;
+  document.getElementById('dispScore').textContent=data.score+'分 / '+data.rank+'名';
+  document.getElementById('scoreBar').innerHTML=`
+    <div class="score-item ${s.生物>=75?'good':s.生物>=60?'ok':'weak'}"><div class="sub">生物</div><div class="num">${s.生物}</div></div>
+    <div class="score-item ${s.英语>=110?'good':s.英语>=80?'ok':'weak'}"><div class="sub">英语</div><div class="num">${s.英语}</div></div>
+    <div class="score-item ${s.语文>=100?'good':s.语文>=80?'ok':'weak'}"><div class="sub">语文</div><div class="num">${s.语文}</div></div>
+    <div class="score-item ${s.化学>=70?'good':s.化学>=55?'ok':'weak'}"><div class="sub">化学</div><div class="num">${s.化学}</div></div>
+    <div class="score-item ${s.数学>=85?'good':s.数学>=65?'ok':'weak'}"><div class="sub">数学</div><div class="num">${s.数学}</div></div>
+    <div class="score-item ${s.物理>=70?'good':s.物理>=50?'ok':'weak'}"><div class="sub">物理</div><div class="num">${s.物理}</div></div>`;
 }
 
-// --- 更新考生画像 ---
-function updateProfileCard(data) {
-  const s = data.scores;
-  const scoreBar = document.getElementById('scoreBar');
-  scoreBar.innerHTML = `
-    <div class="score-item ${s.生物 >= 75 ? 'good' : s.生物 >= 60 ? 'ok' : 'weak'}"><div class="sub">生物</div><div class="num">${s.生物}</div></div>
-    <div class="score-item ${s.英语 >= 110 ? 'good' : s.英语 >= 80 ? 'ok' : 'weak'}"><div class="sub">英语</div><div class="num">${s.英语}</div></div>
-    <div class="score-item ${s.语文 >= 100 ? 'good' : s.语文 >= 80 ? 'ok' : 'weak'}"><div class="sub">语文</div><div class="num">${s.语文}</div></div>
-    <div class="score-item ${s.化学 >= 70 ? 'good' : s.化学 >= 55 ? 'ok' : 'weak'}"><div class="sub">化学</div><div class="num">${s.化学}</div></div>
-    <div class="score-item ${s.数学 >= 85 ? 'good' : s.数学 >= 65 ? 'ok' : 'weak'}"><div class="sub">数学</div><div class="num">${s.数学}</div></div>
-    <div class="score-item ${s.物理 >= 70 ? 'good' : s.物理 >= 50 ? 'ok' : 'weak'}"><div class="sub">物理</div><div class="num">${s.物理}</div></div>
-  `;
-  document.querySelector('#profileCard .row:nth-child(2) .value').textContent = `${data.score}分 / ${data.rank}名`;
-  document.querySelector('#profileCard .row:nth-child(3) .value').textContent = `+${data.score - 368}分`;
-  document.querySelector('#profileCard .row:nth-child(4) .value').textContent = `${data.score - 510}分`;
+function saveData(){
+  const d=getData();
+  localStorage.setItem('gxData',JSON.stringify(d));
+  updateProfile(d);
+  alert('✅ 已保存！');
 }
 
-// --- 渲染学校列表 ---
-function renderSchoolList(schools, tier) {
-  if (!schools || schools.length === 0) return '<div style="color:#999;padding:8px;">暂无推荐</div>';
-  return `<table class="rec-table">
-    <tr><th>院校</th><th>专业方向</th><th>去年最低位次</th><th>匹配度</th></tr>
-    ${schools.map(s => `<tr>
-      <td><strong>${s.name}</strong><br><span style="font-size:11px;color:#999;">${s.location} · ${s.nature}</span></td>
-      <td style="font-size:12px;">${s.majors.slice(0, 2).join('、')}</td>
-      <td>${s.minRank}</td>
-      <td><span class="rec-tag ${tier}">${tier} · ${Math.round(s.matchRate || 0)}%</span></td>
-    </tr>`).join('')}
-  </table>`;
+function renderSchools(schools,tier){
+  if(!schools||!schools.length) return '<div style="color:#999;padding:8px;">暂无推荐</div>';
+  return `<table class="rec-table"><tr><th>院校</th><th>推荐专业</th><th>去年位次</th><th>匹配</th></tr>
+    ${schools.map(s=>`<tr><td><strong>${s.name}</strong><br><span style="font-size:11px;color:#999;">${s.location} · ${s.nature}</span></td>
+    <td style="font-size:12px;">${(s.majors||[]).slice(0,2).join('、')}</td><td>${s.minRank}</td>
+    <td><span class="rec-tag ${tier}">${tier} · ${Math.round(s.matchRate||0)}%</span></td></tr>`).join('')}</table>`;
 }
 
-// --- 生成完整方案 ---
-function generateAdvice() {
-  const data = getStudentData();
-  const engine = RECOMMEND_ENGINE;
-  const plan = engine.generatePlan({
-    score: data.score,
-    rank: data.rank,
-    batch: '提前批',
-    type: '定向师范',
-    scores: data.scores
+function genFull(){
+  const d=getData();
+  const eng = window.RECOMMEND_ENGINE;
+  const plan = eng.generatePlan({score:d.score,rank:d.rank,batch:'提前批',type:'定向师范',scores:d.scores});
+  let html = `<div class="advice-box">${plan.advice}</div>`;
+  
+  // 师范
+  html += `<div class="rec-panel"><div class="rec-panel-header" style="border-left:4px solid #27ae60;">📚 提前批 · 定向师范</div><div class="rec-panel-body">`;
+  ['冲','稳','保'].forEach(t=>{
+    if(plan.定向师范&&plan.定向师范[t]&&plan.定向师范[t].length)
+      html += `<h4 style="margin:8px 0;color:${t==='冲'?'#e74c3c':t==='稳'?'#f39c12':'#27ae60'};">${t==='冲'?'🟢 冲一冲':t==='稳'?'🟡 稳一稳':'🟢 保一保'}</h4>${renderSchools(plan.定向师范[t],t)}`;
   });
-
-  let html = '';
-
-  // 个性化建议
-  html += `<div class="advice-box">${plan.advice}</div>`;
-
-  // 定向师范
-  html += `<div class="rec-panel"><div class="rec-panel-header" style="border-left:4px solid #27ae60;">📚 提前批 · 定向师范推荐</div><div class="rec-panel-body">`;
-  
-  const hasTeacher = plan.定向师范.冲.length > 0 || plan.定向师范.稳.length > 0 || plan.定向师范.保.length > 0;
-  if (hasTeacher) {
-    if (plan.定向师范.冲.length > 0) {
-      html += `<h4 style="margin:8px 0;color:#e74c3c;">🟢 冲一冲</h4>${renderSchoolList(plan.定向师范.冲, '冲')}`;
-    }
-    if (plan.定向师范.稳.length > 0) {
-      html += `<h4 style="margin:8px 0;color:#f39c12;">🟡 稳一稳</h4>${renderSchoolList(plan.定向师范.稳, '稳')}`;
-    }
-    if (plan.定向师范.保.length > 0) {
-      html += `<h4 style="margin:8px 0;color:#27ae60;">🟢 保一保</h4>${renderSchoolList(plan.定向师范.保, '保')}`;
-    }
-  }
   html += `</div></div>`;
-
+  
   // 工科
-  html += `<div class="rec-panel"><div class="rec-panel-header" style="border-left:4px solid #2980b9;">🔧 本科批 · 工科推荐</div><div class="rec-panel-body">`;
-  
-  const engPlan = engine.recommend(data.score, data.rank, '本科批', '工科');
-  if (engPlan['冲'].length > 0) {
-    html += `<h4 style="margin:8px 0;color:#e74c3c;">🟢 冲一冲</h4>${renderSchoolList(engPlan['冲'].slice(0, 3), '冲')}`;
-  }
-  if (engPlan['稳'].length > 0) {
-    html += `<h4 style="margin:8px 0;color:#f39c12;">🟡 稳一稳</h4>${renderSchoolList(engPlan['稳'].slice(0, 3), '稳')}`;
-  }
-  if (engPlan['保'].length > 0) {
-    html += `<h4 style="margin:8px 0;color:#27ae60;">🟢 保一保</h4>${renderSchoolList(engPlan['保'].slice(0, 3), '保')}`;
-  }
+  html += `<div class="rec-panel"><div class="rec-panel-header" style="border-left:4px solid #2980b9;">🔧 本科批 · 工科</div><div class="rec-panel-body">`;
+  const ep = eng.recommend(d.score,d.rank,'本科批','工科');
+  ['冲','稳','保'].forEach(t=>{
+    if(ep[t]&&ep[t].length)
+      html += `<h4 style="margin:8px 0;color:${t==='冲'?'#e74c3c':t==='稳'?'#f39c12':'#27ae60'};">${t==='冲'?'🟢 冲一冲':t==='稳'?'🟡 稳一稳':'🟢 保一保'}</h4>${renderSchools(ep[t].slice(0,3),t)}`;
+  });
   html += `</div></div>`;
-
+  
   // 专业推荐
-  if (plan.专业推荐 && plan.专业推荐.length > 0) {
+  if(plan.专业推荐&&plan.专业推荐.length){
     html += `<div class="rec-panel"><div class="rec-panel-header" style="border-left:4px solid #8e44ad;">💡 科目能力推荐专业</div><div class="rec-panel-body">`;
-    plan.专业推荐.forEach(r => {
+    plan.专业推荐.forEach(r=>{
       html += `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f5f5f5;font-size:13px;">
-        <span><strong>${r.major}</strong></span>
-        <span style="color:#666;">${r.reason.substring(0, 40)}${r.reason.length > 40 ? '...' : ''}</span>
-        <span style="color:#f39c12;">${r.suitability}</span>
-      </div>`;
+        <span><strong>${r.major}</strong></span><span style="color:#f39c12;">${r.suitability}</span></div>
+        <div style="font-size:12px;color:#666;padding:0 0 6px;">${r.reason}</div>`;
     });
     html += `</div></div>`;
   }
-
-  document.getElementById('adviceOutput').innerHTML = html;
-  switchTab('recommend');
   
-  // 滚动到输出区
-  document.getElementById('adviceOutput').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('adviceOutput').innerHTML=html;
+  switchTab('recommend');
+  document.getElementById('adviceOutput').scrollIntoView({behavior:'smooth'});
 }
 
-// --- 只看定向师范 ---
-function generateTeacherOnly() {
-  const data = getStudentData();
-  const engine = RECOMMEND_ENGINE;
-  const plan = engine.generatePlan({
-    score: data.score, rank: data.rank,
-    batch: '提前批', type: '定向师范',
-    scores: data.scores
+function genTeacher(){
+  const d=getData();
+  const eng=window.RECOMMEND_ENGINE;
+  const plan=eng.generatePlan({score:d.score,rank:d.rank,batch:'提前批',type:'定向师范',scores:d.scores});
+  let html=`<div class="advice-box">📚 提前批定向师范 · 免学费 · 包分配 · 有编制</div><div class="rec-panel"><div class="rec-panel-body">`;
+  ['冲','稳','保'].forEach(t=>{
+    if(plan.定向师范&&plan.定向师范[t]&&plan.定向师范[t].length)
+      html+=`<h4 style="margin:8px 0;color:${t==='冲'?'#e74c3c':t==='稳'?'#f39c12':'#27ae60'};">${t==='冲'?'🟢 冲一冲':t==='稳'?'🟡 稳一稳':'🟢 保一保'}</h4>${renderSchools(plan.定向师范[t],t)}`;
+  });
+  html+=`</div></div>`;
+  document.getElementById('adviceOutput').innerHTML=html;
+  switchTab('recommend');
+}
+
+function genEngineer(){
+  const d=getData();
+  const eng=window.RECOMMEND_ENGINE;
+  const ep=eng.recommend(d.score,d.rank,'本科批','工科');
+  let html=`<div class="advice-box">🔧 本科批工科推荐<br>⚠️ 数学${d.scores.数学}分、物理${d.scores.物理}分，建议优先选食品工程/制药工程</div><div class="rec-panel"><div class="rec-panel-body">`;
+  ['冲','稳','保'].forEach(t=>{
+    if(ep[t]&&ep[t].length)
+      html+=`<h4 style="margin:8px 0;color:${t==='冲'?'#e74c3c':t==='稳'?'#f39c12':'#27ae60'};">${t==='冲'?'🟢 冲一冲':t==='稳'?'🟡 稳一稳':'🟢 保一保'}</h4>${renderSchools(ep[t].slice(0,3),t)}`;
+  });
+  html+=`</div></div>`;
+  document.getElementById('adviceOutput').innerHTML=html;
+  switchTab('recommend');
+}
+
+// ============================================================
+// 设置
+// ============================================================
+function openSet(){document.getElementById('setModal').classList.add('show')}
+function closeSet(){document.getElementById('setModal').classList.remove('show')}
+function saveKey(){
+  const k=document.getElementById('apiKey').value;
+  const p=document.getElementById('apiProvider').value;
+  if(k){localStorage.setItem('gxApiKey',k);localStorage.setItem('gxApiProvider',p);alert('✅ 已保存！');closeSet();checkApiReady();}
+  else alert('请输入 API Key');
+}
+
+// ============================================================
+// 初始化
+// ============================================================
+(function(){
+  // 渲染角色列表
+  const list=document.getElementById('skillList');
+  SKILL_INDEX.forEach(s=>{
+    const btn=document.createElement('button');
+    btn.className='skill-item';
+    btn.dataset.skill=s.name;
+    btn.innerHTML=`<span class="skill-avatar">${s.label.charAt(0)}</span><span>${s.label}</span>`;
+    btn.onclick=()=>selectSkill(s.name,s.label);
+    list.appendChild(btn);
   });
 
-  let html = `<div class="advice-box">📚 以下为提前批定向师范推荐（免学费·包分配·有编制）</div>`;
-  html += `<div class="rec-panel"><div class="rec-panel-body">`;
+  // 加载保存数据
+  const saved=localStorage.getItem('gxData');
+  if(saved){
+    try{
+      const d=JSON.parse(saved);
+      document.getElementById('eScore').value=d.score;
+      document.getElementById('eRank').value=d.rank;
+      document.getElementById('eChinese').value=d.scores.语文;
+      document.getElementById('eMath').value=d.scores.数学;
+      document.getElementById('eEnglish').value=d.scores.英语;
+      document.getElementById('ePhysics').value=d.scores.物理;
+      document.getElementById('eChem').value=d.scores.化学;
+      document.getElementById('eBio').value=d.scores.生物;
+      updateProfile(d);
+    }catch(e){updateProfile(getData());}
+  } else updateProfile(getData());
+
+  // 加载API
+  const k=localStorage.getItem('gxApiKey');
+  if(k){document.getElementById('apiKey').value=k;document.getElementById('apiProvider').value=localStorage.getItem('gxApiProvider')||'deepseek';}
+
+  // 加载完毕
+  setTimeout(()=>{document.getElementById('loader-bar').style.display='none';document.querySelector('.app').classList.add('ready');},500);
   
-  if (plan.定向师范.冲.length > 0) {
-    html += `<h4 style="margin:8px 0;color:#e74c3c;">🟢 冲一冲</h4>${renderSchoolList(plan.定向师范.冲, '冲')}`;
-  }
-  if (plan.定向师范.稳.length > 0) {
-    html += `<h4 style="margin:8px 0;color:#f39c12;">🟡 稳一稳</h4>${renderSchoolList(plan.定向师范.稳, '稳')}`;
-  }
-  if (plan.定向师范.保.length > 0) {
-    html += `<h4 style="margin:8px 0;color:#27ae60;">🟢 保一保</h4>${renderSchoolList(plan.定向师范.保, '保')}`;
-  }
-  
-  // 专业推荐
-  if (plan.专业推荐) {
-    html += `<h4 style="margin:12px 0 8px;color:#8e44ad;">💡 推荐专业（基于你的科目能力）</h4>`;
-    plan.专业推荐.forEach(r => {
-      html += `<div style="padding:4px 0;font-size:13px;">• <strong>${r.major}</strong> — ${r.suitability} ${r.reason}</div>`;
-    });
-  }
-  
-  html += `</div></div>`;
-  document.getElementById('adviceOutput').innerHTML = html;
-  switchTab('recommend');
-}
-
-// --- 只看工科 ---
-function generateEngineerOnly() {
-  const data = getStudentData();
-  const engine = RECOMMEND_ENGINE;
-  const engPlan = engine.recommend(data.score, data.rank, '本科批', '工科');
-
-  let html = `<div class="advice-box">🔧 以下为本科普通批工科推荐（公办本科）<br>⚠️ 注意：你的数学${data.scores.数学}分、物理${data.scores.物理}分，学电气/机械/自动化类工科会有较大挑战，建议优先考虑食品工程、制药工程等方向。</div>`;
-  html += `<div class="rec-panel"><div class="rec-panel-body">`;
-  
-  if (engPlan['冲'].length > 0) {
-    html += `<h4 style="margin:8px 0;color:#e74c3c;">🟢 冲一冲</h4>${renderSchoolList(engPlan['冲'].slice(0, 3), '冲')}`;
-  }
-  if (engPlan['稳'].length > 0) {
-    html += `<h4 style="margin:8px 0;color:#f39c12;">🟡 稳一稳</h4>${renderSchoolList(engPlan['稳'].slice(0, 3), '稳')}`;
-  }
-  if (engPlan['保'].length > 0) {
-    html += `<h4 style="margin:8px 0;color:#27ae60;">🟢 保一保</h4>${renderSchoolList(engPlan['保'].slice(0, 3), '保')}`;
-  }
-  
-  html += `</div></div>`;
-  document.getElementById('adviceOutput').innerHTML = html;
-  switchTab('recommend');
-}
-
-// --- 设置相关 ---
-function openSettings() { document.getElementById('settingsModal').classList.add('show'); }
-function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
-function saveApiKey() {
-  const provider = document.getElementById('apiProvider').value;
-  const key = document.getElementById('apiKey').value;
-  if (key) {
-    localStorage.setItem('gxApiProvider', provider);
-    localStorage.setItem('gxApiKey', key);
-    alert('✅ API Key 已保存！');
-    closeSettings();
-  } else {
-    alert('请输入 API Key');
-  }
-}
-
-// --- 初始化 ---
-(function init() {
-  // 加载保存的学生数据
-  const saved = localStorage.getItem('gxStudentData');
-  if (saved) {
-    try {
-      const data = JSON.parse(saved);
-      document.getElementById('editScore').value = data.score;
-      document.getElementById('editRank').value = data.rank;
-      document.getElementById('editChinese').value = data.scores.语文;
-      document.getElementById('editMath').value = data.scores.数学;
-      document.getElementById('editEnglish').value = data.scores.英语;
-      document.getElementById('editPhysics').value = data.scores.物理;
-      document.getElementById('editChem').value = data.scores.化学;
-      document.getElementById('editBio').value = data.scores.生物;
-      updateProfileCard(data);
-    } catch(e) {}
-  } else {
-    updateProfileCard(getStudentData());
-  }
-
-  // 加载API配置
-  const savedKey = localStorage.getItem('gxApiKey');
-  if (savedKey) {
-    document.getElementById('apiKey').value = savedKey;
-    document.getElementById('apiProvider').value = localStorage.getItem('gxApiProvider') || 'deepseek';
-  }
-
-  // 隐藏加载条
-  setTimeout(() => {
-    document.getElementById('loader-bar').style.display = 'none';
-    document.querySelector('.app').classList.add('ready');
-  }, 500);
-
-  // 自动生成方案
-  setTimeout(generateAdvice, 800);
+  // 自动生成推荐
+  setTimeout(genFull,800);
 })();
 </script>
 </body>

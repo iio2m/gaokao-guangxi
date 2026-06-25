@@ -4,210 +4,409 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <meta name="theme-color" content="#27ae60">
-<title>广西高考志愿助手 GaokaoGX</title>
-<meta name="description" content="广西2026高考志愿填报辅助工具，纯前端，冲稳保推荐引擎+AI角色对话">
+<title>广西考生志愿通 · 多角色群聊 + 全国院校</title>
+<meta name="description" content="专为广西2026物理类考生设计的志愿填报工具，全国院校，AI多角色群聊，实时数据联网校验">
 <script src="data/gaokao-data.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{font:14px/1.5 '-apple-system','Segoe UI','Noto Sans SC',sans-serif;background:#f5f6f8;color:#333;overflow:hidden;height:100vh}
-:root{--p:#27ae60;--pl:#e8f8f0;--pd:#1e8449;--w:#fbbc04;--d:#e74c3c}
+body{font:14px/1.5 '-apple-system','Segoe UI','Noto Sans SC',sans-serif;background:#f0f2f5;color:#222;overflow:hidden;height:100vh}
+:root{--p:#27ae60;--pl:#e8f8f0;--pd:#1e8449;--w:#f39c12;--d:#e74c3c;--b:#2980b9}
 .app{display:flex;height:100vh}
 /* sidebar */
-.sidebar{width:240px;background:#fff;border-right:1px solid #e5e5e5;display:flex;flex-direction:column;flex-shrink:0}
-.sb-hd{padding:14px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px}
-.sb-logo{width:32px;height:32px;background:linear-gradient(135deg,var(--p),#2980b9);border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px}
-.sb-title{font-weight:700;color:var(--p)}
-.sb-skills{flex:1;overflow-y:auto;padding:8px}
-.sb-sec{font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;padding:8px 12px 4px}
-.skill-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;background:none;border-radius:8px;font-size:13px;color:#444;cursor:pointer;transition:all .15s;text-align:left}
-.skill-btn:hover{background:#f5f5f5}
-.skill-btn.on{background:var(--pl);color:var(--p);font-weight:600}
-.skill-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff}
-.sb-ft{padding:10px 14px;border-top:1px solid #eee;font-size:11px;color:#888;display:flex;align-items:center;gap:6px}
+.sb{width:220px;background:#fff;border-right:1px solid #ddd;display:flex;flex-direction:column;flex-shrink:0}
+.sb-h{padding:12px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px}
+.sb-logo{width:30px;height:30px;background:linear-gradient(135deg,var(--p),#2980b9);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px}
+.sb-title{font-weight:700;color:var(--p);font-size:14px}
+.sb-body{flex:1;overflow-y:auto;padding:6px}
+.sb-sec{font-size:10px;font-weight:600;color:#aaa;padding:10px 10px 4px;letter-spacing:.5px}
+.r-btn{display:flex;align-items:center;gap:6px;width:100%;padding:7px 10px;border:none;background:none;border-radius:7px;font-size:12px;color:#555;cursor:pointer;transition:all .12s;text-align:left;margin:1px 0}
+.r-btn:hover{background:#f5f5f5}
+.r-btn.on{background:var(--pl);color:var(--p);font-weight:600}
+.r-av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.r-badge{display:inline-block;padding:0 5px;border-radius:8px;font-size:9px;background:#eee;color:#888;margin-left:auto}
+.r-btn.on .r-badge{background:var(--p);color:#fff}
+.sb-f{padding:10px 12px;border-top:1px solid #eee;font-size:11px;color:#888}
+
 /* main */
-.main{flex:1;display:flex;flex-direction:column;min-width:0}
-.hd{padding:10px 16px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;gap:10px}
+.mn{flex:1;display:flex;flex-direction:column;min-width:0;background:#f0f2f5}
+.hd{padding:10px 14px;background:#fff;border-bottom:1px solid #ddd;display:flex;align-items:center;gap:10px;flex-shrink:0}
 .hd-info h1{font-size:15px;font-weight:600}
-.hd-info p{font-size:11px;color:#888}
-.content{flex:1;overflow-y:auto;padding:16px}
+.hd-info p{font-size:10px;color:#888}
+.hd-info p a{color:var(--b)}
+.ct{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+
 /* cards */
-.card{background:#fff;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid #eee}
-.card-hd{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.card{background:#fff;border-radius:10px;padding:14px;border:1px solid #e5e5e5}
+.card-h{font-size:14px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.card-h .dot{width:8px;height:8px;border-radius:50%;background:var(--p)}
 .profile{background:linear-gradient(135deg,#e8f8f0,#e8f0fe)}
-.profile-r{display:flex;justify-content:space-between;padding:3px 0;font-size:13px}
-.profile-r .lb{color:#888}
-.profile-r .vl{font-weight:600}
-.scores{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
-.sc{flex:1;min-width:55px;text-align:center;padding:4px 2px;border-radius:6px;font-size:11px}
-.sc .scs{font-size:10px;color:#888}
-.sc .scv{font-weight:700;font-size:15px}
-.sc.g{background:#d4edda}.sc.g .scv{color:#155724}
-.sc.o{background:#fef3cd}.sc.o .scv{color:#856404}
-.sc.w{background:#ffe0e0}.sc.w .scv{color:#c0392b}
-/* table */
-.tbl{width:100%;border-collapse:collapse;font-size:12px}
-.tbl th{text-align:left;padding:6px;font-weight:600;color:#888;font-size:10px;border-bottom:1px solid #f0f0f0}
-.tbl td{padding:8px 6px;border-bottom:1px solid #f5f5f5;vertical-align:top}
-.tag{display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600}
-.tag.c{background:#ffe0e0;color:#c0392b}
-.tag.w{background:#fef3cd;color:#856404}
-.tag.s{background:#d4edda;color:#155724}
+.p-row{display:flex;justify-content:space-between;padding:2px 0;font-size:13px}
+.p-row .l{color:#888}.p-row .v{font-weight:600}
+.s-bar{display:flex;gap:3px;flex-wrap:wrap;margin-top:6px}
+.s-item{flex:1;min-width:52px;text-align:center;padding:3px 2px;border-radius:5px;font-size:11px}
+.s-item .sn{font-size:9px;color:#888}.s-item .sv{font-weight:700;font-size:14px}
+.s-item.g{background:#d4edda}.s-item.g .sv{color:#155724}
+.s-item.o{background:#fef3cd}.s-item.o .sv{color:#856404}
+.s-item.w{background:#ffe0e0}.s-item.w .sv{color:#c0392b}
+
+/* chat */
+.msg-area{min-height:350px;max-height:500px;overflow-y:auto}
+.msg{display:flex;gap:8px;margin-bottom:12px;animation:fadeIn .2s}
+.msg .av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.msg .b{max-width:80%;padding:8px 12px;border-radius:10px;font-size:13px;line-height:1.55;white-space:pre-wrap}
+.msg.role .b{background:#fff;border:1px solid #e0e0e0}
+.msg.user .b{background:var(--p);color:#fff;border-bottom-right-radius:4px;margin-left:auto}
+.msg .b .rn{font-size:10px;color:#999;font-weight:600;margin-bottom:3px;display:block}
+.note{font-size:10px;color:#aaa;text-align:center;border-top:1px solid #eee;margin-top:8px;padding-top:8px}
+
+/* chat input */
+.inp-row{display:flex;gap:6px;padding:8px 0 0;border-top:1px solid #eee;margin-top:4px}
+.inp-row textarea{flex:1;border:1px solid #ddd;border-radius:8px;padding:8px 10px;font-size:13px;resize:none;font-family:inherit;outline:none;max-height:80px}
+.inp-row textarea:focus{border-color:var(--p)}
+.inp-row button{padding:8px 16px;border:none;border-radius:8px;background:var(--p);color:#fff;font-size:13px;cursor:pointer;white-space:nowrap}
+.inp-row button:disabled{opacity:.4}
+
 /* buttons */
-.btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.btn{padding:7px 14px;border:1px solid #ddd;border-radius:7px;background:#fff;font-size:13px;cursor:pointer;transition:all .15s;font-family:inherit}
-.btn:hover{background:#f8f8f8}
+.btns{display:flex;gap:5px;flex-wrap:wrap}
+.btn{padding:6px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:12px;cursor:pointer;transition:all .12s;font-family:inherit}
+.btn:hover{background:#f5f5f5}
 .btn-p{background:var(--p);color:#fff;border-color:var(--p);font-weight:600}
 .btn-p:hover{background:var(--pd)}
-/* chat */
-.chat-box{background:#fff;border:1px solid #e5e5e5;border-radius:10px}
-.chat-msgs{height:300px;overflow-y:auto;padding:14px}
-.chat-msg{margin-bottom:10px}
-.chat-msg .bub{padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.5;max-width:80%;display:inline-block}
-.chat-msg.bot .bub{background:#f5f5f5;border-bottom-left-radius:4px}
-.chat-msg.user{text-align:right}
-.chat-msg.user .bub{background:var(--p);color:#fff;border-bottom-right-radius:4px}
-.chat-inp{display:flex;border-top:1px solid #eee;padding:8px}
-.chat-inp textarea{flex:1;border:none;outline:none;font-size:13px;resize:none;padding:6px;font-family:inherit;max-height:80px}
-.chat-inp button{padding:6px 14px;border:none;background:var(--p);color:#fff;border-radius:6px;cursor:pointer;font-size:13px}
-.chat-inp button:disabled{opacity:.5}
-/* form */
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.fg{margin-bottom:10px}
-.fg label{display:block;font-size:12px;font-weight:500;margin-bottom:3px;color:#666}
-.fg input{width:100%;padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:13px}
+.btn-b{background:var(--b);color:#fff;border-color:var(--b)}
+.btn-b:hover{background:#2471a3}
+.btn-d{border-color:var(--d);color:var(--d)}
+
+/* modes */
+.mode-switch{display:flex;border:1px solid #ddd;border-radius:8px;overflow:hidden;margin-bottom:10px}
+.mode-btn{flex:1;padding:8px 16px;border:none;background:#fff;font-size:13px;cursor:pointer;text-align:center;transition:all .12s;font-family:inherit}
+.mode-btn.on{background:var(--p);color:#fff;font-weight:600}
+.mode-btn:hover:not(.on){background:#f5f5f5}
+
+/* 表单 */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.fg{margin-bottom:8px}.fg label{display:block;font-size:11px;color:#666;margin-bottom:2px}.fg input,.fg select{width:100%;padding:5px 8px;border:1px solid #ddd;border-radius:5px;font-size:12px}
+
 /* modal */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
 .modal-overlay.on{display:flex}
-.modal{background:#fff;border-radius:12px;width:90%;max-width:380px;padding:20px}
+.modal{background:#fff;border-radius:12px;width:92%;max-width:400px;max-height:85vh;overflow-y:auto;padding:20px}
 .modal h2{font-size:16px;margin-bottom:12px}
+
+/* 群聊选中 */
+.role-check{display:flex;align-items:center;gap:6px;padding:4px 0;font-size:12px}
+.role-check input{margin:0}
+.tag-chong{background:#ffe0e0;color:#c0392b;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600}
+.tag-wen{background:#fef3cd;color:#856404;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600}
+.tag-bao{background:#d4edda;color:#155724;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600}
+
 /* mobile */
-@media(max-width:720px){.sidebar{display:none;position:fixed;inset:0;z-index:99;width:100%}.sidebar.open{display:flex}}
-#out{min-height:200px}
-.advice{background:#fff8e1;border-left:4px solid var(--w);padding:10px 12px;border-radius:6px;font-size:12px;line-height:1.6;margin-bottom:10px;white-space:pre-wrap}
-.online-note{background:#e8f0fe;border-left:4px solid #2980b9;padding:10px 12px;border-radius:6px;font-size:12px;line-height:1.6;margin-bottom:10px}
-#loader{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--p),#2980b9);animation:ldr .8s infinite;z-index:9999;opacity:1;transition:opacity .3s}
+@media(max-width:720px){.sb{display:none;position:fixed;inset:0;z-index:99;width:100%}.sb.open{display:flex}}
+#loader{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--p),var(--b));animation:ldr .8s infinite;z-index:999;transition:opacity .3s}
 #loader.done{opacity:0}
 @keyframes ldr{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.grp-avs{display:flex;gap:-6px}
+.grp-avs span{margin-left:-4px}
+.grp-avs span:first-child{margin-left:0}
 </style>
 </head>
 <body>
 <div id="loader"></div>
 <div class="app">
-  <aside class="sidebar" id="sb">
-    <div class="sb-hd"><span class="sb-logo">桂</span><span class="sb-title">GaokaoGX</span><span style="font-size:10px;color:#aaa;margin-left:auto">v2</span></div>
-    <div class="sb-skills">
-      <div class="sb-sec">🤖 AI角色</div>
-      <div id="skillList"></div>
-      <div class="sb-sec" style="margin-top:12px">🔧 工具</div>
-      <button class="skill-btn" onclick="switchTab('rec')" style="color:var(--p);font-weight:600">🎯 冲稳保推荐</button>
-      <button class="skill-btn" onclick="switchTab('data')">📝 编辑信息</button>
+  <!-- 侧栏 -->
+  <aside class="sb" id="sb">
+    <div class="sb-h"><span class="sb-logo">桂</span><span class="sb-title">志愿通</span><span style="font-size:9px;color:#aaa;margin-left:auto">v3</span></div>
+    <div class="sb-body">
+      <div class="sb-sec">🤖 AI角色（点击切换）</div>
+      <div id="roleList"></div>
+      <div class="sb-sec" style="margin-top:8px">🔧 模式</div>
+      <button class="r-btn on" onclick="setMode('single')"><span style="font-size:14px">💬</span> 单角色对话<span class="r-badge">当前</span></button>
+      <button class="r-btn" onclick="setMode('group')"><span style="font-size:14px">👥</span> 多角色群聊</button>
+      <button class="r-btn" onclick="setMode('rec')"><span style="font-size:14px">📊</span> 冲稳保推荐</button>
+      <div class="sb-sec" style="margin-top:8px">⚙️</div>
+      <button class="r-btn" onclick="openSettings()">🔑 配置API Key</button>
     </div>
-    <div class="sb-ft"><span style="background:linear-gradient(135deg,var(--p),#2980b9);color:#fff;padding:1px 8px;border-radius:10px;font-size:10px">广西2026</span>物理类·本科通用</div>
+    <div class="sb-f"><span style="background:linear-gradient(135deg,var(--p),var(--b));color:#fff;padding:1px 6px;border-radius:8px;font-size:9px">全国院校</span> 广西物理类 2026</div>
   </aside>
-  <main class="main">
+  <!-- 主区 -->
+  <main class="mn">
     <div class="hd">
-      <button class="skill-btn" style="width:auto;padding:6px 10px;margin-right:6px" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
-      <div class="hd-info"><h1 id="titleTxt">🎯 冲稳保推荐引擎</h1><p>数据来源：广西招生考试院2025公开数据 | ⚠请以官方gxeea.cn为准</p></div>
-      <button class="btn" onclick="openSettings()" title="设置API Key">⚙️</button>
-    </div>
-    <div class="content">
-      <!-- 推荐页 -->
-      <div id="tab-rec">
-        <div class="card profile">
-          <div class="card-hd">👩‍🎓 考生画像 <span style="font-size:11px;color:#888;font-weight:400">广西玉林博白 · 物理类 · 女 · 工人家庭</span></div>
-          <div class="profile-r"><span class="lb">总分 / 位次</span><span class="vl" style="font-size:20px" id="pvScore">489分 / 76054名</span></div>
-          <div class="profile-r"><span class="lb">本科线差 / 特控线差</span><span class="vl"><span style="color:var(--p)">+121分</span> · <span style="color:var(--w)">-21分</span></span></div>
-          <div class="scores" id="scoreBar"></div>
-        </div>
-        <div class="btns">
-          <button class="btn btn-p" onclick="genRec()">🎯 生成完整方案</button>
-          <button class="btn" onclick="genAll()">📋 全部院校一览</button>
-          <button class="btn" onclick="switchTab('chat')">💬 AI角色对话</button>
-        </div>
-        <div class="online-note">🔍 <b>数据说明</b>：院校最低分和位次基于广西招生考试院2025年公开投档数据。因搜索无法索引完整投档表，部分数据为近似值。<b>建议你在<a href="https://www.gxeea.cn" target="_blank" style="color:var(--p)">gxeea.cn（官方）</a>的志愿填报系统中查看各校近3年精确位次。</b>本工具提供的是基于位次法的冲稳保策略参考。</div>
-        <div id="out"></div>
+      <button class="btn" style="padding:4px 8px" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
+      <div class="hd-info">
+        <h1 id="titleTxt">💬 单角色对话</h1>
+        <p id="titleSub">AI联网搜索实时数据 · 全国院校 · <a href="https://www.gxeea.cn" target="_blank">官方gxeea.cn</a></p>
       </div>
-      <!-- 聊天页 -->
-      <div id="tab-chat" style="display:none">
-        <div class="chat-box">
-          <div class="chat-msgs" id="chatMsgs"></div>
-          <div class="chat-inp">
-            <textarea id="chatInp" rows="1" placeholder="输入问题..." disabled></textarea>
-            <button id="sendBtn" disabled onclick="send()">发送</button>
+      <span id="curRoleTag" style="font-size:11px;color:var(--p);font-weight:600;background:var(--pl);padding:3px 8px;border-radius:6px">广西志愿顾问</span>
+    </div>
+    <div class="ct" id="content">
+      <!-- 考生画像 -->
+      <div class="card profile"><div class="card-h"><span class="dot"></span>👩‍🎓 考生画像 · 广西玉林博白 · 物理类 · 女 · 工人家庭</div>
+        <div class="p-row"><span class="l">总分 / 位次</span><span class="v" style="font-size:20px" id="pvScore">489 / 76054</span></div>
+        <div class="p-row"><span class="l">本科线差 / 特控线差</span><span class="v"><span style="color:var(--p)">+121</span> / <span style="color:var(--w)">-21</span></span></div>
+        <div class="s-bar" id="scoreBar"></div>
+      </div>
+      <!-- 模式: 单角色 -->
+      <div id="mode-single">
+        <div class="card" style="min-height:300px"><div class="msg-area" id="singleMsgs"><div class="msg role"><span class="av" style="background:var(--p)">桂</span><div class="b"><span class="rn">广西志愿顾问</span>你好！我是广西高考志愿顾问。告诉我你的想法、想去的城市、感兴趣的专业方向，我会联网帮你查最新数据，和你一起分析。</div></div></div>
+          <div class="inp-row"><textarea id="singleInp" rows="2" placeholder="输入问题（我会联网搜索真实数据）..."></textarea><button id="singleSend" onclick="chatSend('single')">发送</button></div>
+          <div class="note">💡 AI会联网搜索最新录取数据、就业信息后再回答 | 全国范围院校</div>
+        </div>
+      </div>
+      <!-- 模式: 群聊 -->
+      <div id="mode-group" style="display:none">
+        <div class="card" style="margin-bottom:8px"><div class="card-h">👥 选择参与讨论的角色</div>
+          <div class="role-check" style="display:flex;gap:8px;flex-wrap:wrap" id="grpChecks"></div>
+          <div class="btns" style="margin-top:8px">
+            <button class="btn btn-p" onclick="startGroupChat()">🎬 开始群聊</button>
+            <button class="btn" onclick="selectAllRoles()">全选</button>
+            <button class="btn" onclick="deselectAllRoles()">取消全选</button>
           </div>
         </div>
-        <div style="font-size:11px;color:#888;text-align:center;padding:6px" id="apiHint">💡 配置API Key后可使用AI对话</div>
-      </div>
-      <!-- 编辑页 -->
-      <div id="tab-data" style="display:none">
-        <div class="card"><div class="card-hd">📝 编辑信息</div>
-          <div class="form-row"><div class="fg"><label>总分</label><input type="number" id="es" value="489"></div><div class="fg"><label>位次</label><input type="number" id="er" value="76054"></div></div>
-          <div class="form-row"><div class="fg"><label>语文</label><input type="number" id="ecn" value="102"></div><div class="fg"><label>数学</label><input type="number" id="emat" value="74"></div></div>
-          <div class="form-row"><div class="fg"><label>英语</label><input type="number" id="een" value="113"></div><div class="fg"><label>物理</label><input type="number" id="eph" value="50"></div></div>
-          <div class="form-row"><div class="fg"><label>化学</label><input type="number" id="ech" value="70"></div><div class="fg"><label>生物</label><input type="number" id="ebi" value="80"></div></div>
-          <button class="btn btn-p" onclick="saveEdit()" style="margin-top:6px">💾 保存</button>
+        <div class="card" style="min-height:300px">
+          <div class="msg-area" id="groupMsgs"><div class="msg role"><span class="av" style="background:#aaa">👥</span><div class="b"><span class="rn">系统</span>选定角色后，输入话题开始群聊。多个AI角色会依次发言讨论你的问题。</div></div></div>
+          <div class="inp-row"><textarea id="groupInp" rows="2" placeholder="输入讨论话题（如：我489分生物强数学弱，选师范还是工科？）..."></textarea><button id="groupSend" onclick="chatSend('group')">发起讨论</button></div>
+          <div class="note">💡 多个角色围绕同一话题展开讨论 | 每个角色会联网查数据后给观点 | 广西考生可报全国院校</div>
         </div>
+      </div>
+      <!-- 模式: 推荐 -->
+      <div id="mode-rec" style="display:none">
+        <div class="btns" style="margin-bottom:10px">
+          <button class="btn btn-p" onclick="genRec()">🎯 生成冲稳保方案</button>
+          <button class="btn" onclick="genAll()">📋 全部院校一览</button>
+        </div>
+        <div id="recOut" style="min-height:200px"></div>
+        <div class="note">⚠ 本地数据基于2025广西公开数据，精确位次请以gxeea.cn为准。AI角色可联网查全国院校最新数据。</div>
       </div>
     </div>
   </main>
 </div>
+
 <!-- 设置 -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal"><h2>⚙️ 设置 AI API</h2>
-    <p style="font-size:12px;color:#888;margin-bottom:10px">API Key仅存本地浏览器，直连AI厂商</p>
-    <div class="fg"><label>选择 AI</label><select id="apiProv" style="width:100%;padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:13px"><option value="deepseek">🥇 DeepSeek V4 Flash（推荐）</option><option value="glm_free">🆓 GLM-4-Flash（免费）</option></select></div>
-    <div class="fg"><label>API Key</label><input type="password" id="apiKey" placeholder="输入API Key..." style="width:100%"></div>
+    <p style="font-size:12px;color:#888;margin-bottom:8px">配置后可使用AI角色对话和群聊。<b>API Key仅存本地浏览器。</b></p>
+    <div class="fg"><label>选择服务商</label><select id="apiProvider" style="width:100%;padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:13px"><option value="deepseek">🥇 DeepSeek V4 Flash（推荐）</option><option value="glm_free">🆓 GLM-4-Flash（免费）</option></select></div>
+    <div class="fg"><label>API Key</label><input type="password" id="apiKey" placeholder="输入 API Key..." style="width:100%"></div>
+    <div class="fg"><label>联网搜索工具Key（用于GLM-4-Flash的web搜索）</label><input type="password" id="glmKey" placeholder="如用GLM且需联网，填此Key" style="width:100%"></div>
     <button class="btn btn-p" onclick="saveApiKey()">💾 保存</button>
     <button class="btn" onclick="closeSettings()" style="margin-top:6px">关闭</button>
-    <p style="font-size:10px;color:#888;margin-top:8px">🔒 Key仅存localStorage | 浏览器直连AI | 不上传任何服务器</p>
+    <p style="font-size:9px;color:#888;margin-top:8px">🔒 localStorage存储 | 浏览器直连AI | 不上传任何服务器</p>
   </div>
 </div>
+
 <script>
-// === skills ===
-const S={
-'guangxi-advisor':{n:'广西志愿顾问',a:'桂',c:'#27ae60',s:'你是广西高考志愿专家。考生：广西物理类489分/76054位次，女生，工人家庭。请基于分数和位次给出志愿建议（冲稳保），考虑就业前景和性别适配。'},
-'zhangxuefeng':{n:'张雪峰',a:'雪',c:'#e74c3c',s:'你是张雪峰，用东北大哥语气直接回应。核心：先问家庭条件再给建议，普通家庭稳定优先。用数据说话。考生489分/76054位次，数学74物理50偏弱。'},
-'teacher-training':{n:'定向师范专家',a:'师',c:'#8e44ad',s:'你是广西定向师范招生专家。分析定向师范政策：免学费、包分配、有编制。考生489分/76054位次。'},
-'engineering':{n:'工科指导师',a:'工',c:'#2980b9',s:'你是工科专业指导。考生数学74物理50，分析各工科课程难度和就业，推荐适合女生且对数理要求友好的工科。'},
-'balancer':{n:'平衡者',a:'衡',c:'#f39c12',s:'你是理性分析者。同时分析师范和工科的利弊，给出折中方案。'},
-'parent':{n:'家长视角',a:'家',c:'#e67e22',s:'你是广西普通工人家长，女儿高考489分。关心学费贵不贵、工作稳不稳定、女孩子安不安全。'},
-'career':{n:'职业规划师',a:'职',c:'#1abc9c',s:'你是职业规划师。分析各方向的就业前景、薪资、发展路径，给5-10年职业规划。'},
-'data-analyst':{n:'数据分析师',a:'数',c:'#3498db',s:'你是数据分析师。广西物理类约18万考生，位次76054（前42%）。用数据说话：录取概率、就业率、薪资中位数。'},
-'teacher':{n:'教师视角',a:'教',c:'#2ecc71',s:'你是经验丰富的中学教师。分享当老师的真实体验：工作内容、收入、职业发展、优缺点。'}
+// === 角色定义 ===
+const ROLES={
+'guangxi-advisor':{n:'广西志愿顾问',a:'桂',c:'#27ae60',sys:`你是广西高考志愿填报专家，精通全国院校在广西的招生录取情况，非常熟悉新高考3+1+2模式的志愿填报规则。
+
+【考生背景】广西2026年物理类考生，女，普通工人家庭。总分489分，全区位次76054。各科：语文102、数学74、英语113、物理50、化学70、生物80。2026广西分数线：物理特控线510、本科线368。
+
+【你的工作方式】
+1. 每次回答前，先联网搜索相关的最新数据（录取分数、位次、就业率、专业前景），不要凭记忆编造数据
+2. 推荐的院校不限于广西，可以是全国范围在广西招生的公办本科
+3. 用具体数据说话——说"这个学校分数线多少"而不是"分数适中"
+4. 考虑普通家庭的负担能力和女生的就业适配性
+
+【联网搜索指引】
+- 查询某校录取分：搜索"[院校名] 广西 2025 录取 最低分 位次 物理类"
+- 查询专业就业：搜索"[专业名] 就业率 薪资 2025"
+- 优先使用gxeea.cn、gaokao.cn、eol.cn的数据`},
+
+'zhangxuefeng':{n:'张雪峰',a:'雪',c:'#e74c3c',sys:`你是张雪峰本人，用东北大哥的语气和节奏回应。你已经去世（2026年3月），角色扮演基于你生前的全部公开言论。
+
+考生：广西物理类489分/76054位次，女，工人家庭，数学74物理50偏弱，生物80英语113较强。
+
+【联网工作流】涉及具体学校/专业时，先联网搜索真实数据。注意：你推荐的院校不限广西，全国公办本科在广西招生的都可以推荐。
+
+核心原则：先问家庭条件再给建议；看数据不看情怀；普通家庭稳定优先。
+
+表达风格：短句、快节奏、东北方言、绝对化表达（"我跟你说""千万别""没有之一"）。`},
+
+'career':{n:'职业规划师',a:'职',c:'#1abc9c',sys:`你是专业的职业规划师，擅长从长期就业和职业发展角度分析专业选择。
+
+考生：广西物理类489分/76054位次，女。
+
+【联网工作流】先搜索目标专业/行业的就业数据、招聘需求、薪资中位数、5-10年发展路径，再基于数据给出职业规划建议。
+
+关注点：不同专业10年后的发展差距、行业稳定性、考研转行可能性、女生在各行业的职业天花板。`},
+
+'balancer':{n:'理性分析者',a:'衡',c:'#f39c12',sys:`你是高考志愿领域的理性分析者。你不会偏向任何单一立场，而是同时呈现选择的优势和风险。
+
+考生：广西物理类489分/76054位次，女，工人家庭。
+
+【联网工作流】遇到需要数据的判断时，联网搜索多方数据，确保分析有据可依。
+
+分析框架：每个选择都列出优势/劣势/风险/机会，让考生自己做知情决策。`},
+
+'parent':{n:'家长视角',a:'家',c:'#e67e22',sys:`你是广西普通工人家庭的家长，女儿今年高考489分。你不懂专业术语，最关心：学费贵不贵？好不好找工作？稳不稳定？女孩子安不安全？离家远不远？
+
+用朴实无华的语言表达担忧和期望，但也要支持和理解女儿的想法。`},
+
+'teacher':{n:'高校教师',a:'教',c:'#8e44ad',sys:`你是一位在广西高校任教多年的教授，了解大学真实的教学质量、学术氛围、学生就业情况。
+
+考生：广西489分/76054位次，女。
+
+【联网工作流】推荐院校时先搜索该校的专业评估、学科排名、学生反馈。
+
+从教师视角分享：不同学校的真实教学水平、哪些专业师资强、学生毕业后的真实去向。`}
 };
-let curSkill='guangxi-advisor';
-// === init ===
+
+const RKEYS=Object.keys(ROLES);
+let curRole=RKEYS[0];
+let mode='single'; // single | group | rec
+let isTyping=false;
+
+// === 初始化 ===
 (function(){
-  // skills
-  document.getElementById('skillList').innerHTML=Object.entries(S).map(([k,v])=>`<button class="skill-btn ${k===curSkill?'on':''}" onclick="selSkill('${k}')"><span class="skill-av" style="background:${v.c}">${v.a}</span>${v.n}</button>`).join('');
-  // scores
-  const saved=localStorage.getItem('gxV2');let d=getStu();
+  // 角色列表
+  document.getElementById('roleList').innerHTML=RKEYS.map(k=>`<button class="r-btn ${k===curRole?'on':''}" onclick="selRole('${k}')"><span class="r-av" style="background:${ROLES[k].c}">${ROLES[k].a}</span>${ROLES[k].n}</button>`).join('');
+  // 群聊选择
+  document.getElementById('grpChecks').innerHTML=RKEYS.map(k=>`<label class="role-check"><input type="checkbox" data-role="${k}" ${k===curRole?'checked':''}>${ROLES[k].n}</label>`).join('');
+  // 考生数据
+  const saved=localStorage.getItem('gxV3stu');
+  let d=getStu();
   if(saved)try{const p=JSON.parse(saved);Object.assign(d,p);['es','er','ecn','emat','een','eph','ech','ebi'].forEach((id,i)=>{const ks=['score','rank','语文','数学','英语','物理','化学','生物'];document.getElementById(id).value=id==='er'?d.rank:id==='es'?d.score:d.scores[ks[i]]})}catch(e){}
-  refresh(d);
-  // api key
-  const k=localStorage.getItem('gxApiKey2');
-  if(k){document.getElementById('apiKey').value=k;document.getElementById('chatInp').disabled=false;document.getElementById('sendBtn').disabled=false;document.getElementById('apiHint').textContent='✅ API已配置';}
-  // ready
-  setTimeout(()=>{document.getElementById('loader').classList.add('done');genRec();},200);
+  refreshScores(d);
+  // API Key
+  if(localStorage.getItem('gxV3key')){document.getElementById('apiKey').value=localStorage.getItem('gxV3key');document.getElementById('apiProvider').value=localStorage.getItem('gxV3prov')||'deepseek'}
+  // 加载完成
+  setTimeout(()=>{document.getElementById('loader').classList.add('done')},100);
 })();
-// === helpers ===
+
+// === 工具函数 ===
 function getStu(){return{score:+document.getElementById('es').value||489,rank:+document.getElementById('er').value||76054,scores:{语文:+document.getElementById('ecn').value||102,数学:+document.getElementById('emat').value||74,英语:+document.getElementById('een').value||113,物理:+document.getElementById('eph').value||50,化学:+document.getElementById('ech').value||70,生物:+document.getElementById('ebi').value||80}}}
-function refresh(d){const s=d.scores;document.getElementById('pvScore').textContent=`${d.score}分 / ${d.rank}名`;document.getElementById('scoreBar').innerHTML=Object.entries(s).map(([k,v])=>{const c=v>=80?'g':v>=60?'o':'w';return`<div class="sc ${c}"><div class="scs">${k}</div><div class="scv">${v}</div></div>`}).join('')}
-function saveEdit(){const d=getStu();localStorage.setItem('gxV2',JSON.stringify(d));refresh(d);genRec()}
-function switchTab(t){document.getElementById('tab-rec').style.display=t==='rec'?'block':'none';document.getElementById('tab-chat').style.display=t==='chat'?'block':'none';document.getElementById('tab-data').style.display=t==='data'?'block':'none';document.getElementById('titleTxt').textContent=t==='rec'?'🎯 冲稳保推荐引擎':t==='chat'?'💬 AI角色对话':'📝 编辑信息'}
-function selSkill(k){curSkill=k;document.querySelectorAll('.skill-btn').forEach(x=>x.classList.remove('on'));event.target.closest('.skill-btn').classList.add('on')}
-// === 推荐 ===
-function renderTbl(list,tier){if(!list||!list.length)return'<div style="color:#999;padding:6px">暂无推荐</div>';return`<table class="tbl"><tr><th>院校</th><th>所在地</th><th>类型</th><th>最低位次</th><th>匹配</th></tr>${list.map(x=>`<tr><td><b>${x.n}</b></td><td>${x.l}</td><td>${x.t||'—'}</td><td>${x.rk}</td><td><span class="tag ${tier==='冲'?'c':tier==='稳'?'w':'s'}">${tier} ${Math.round(x.m)}%</span></td></tr>`).join('')}</table>`}
-function genRec(){try{const d=getStu();const all=ENGINE.recommend(d.score,d.rank);let h='';['冲','稳','保'].forEach(t=>{if(all[t]&&all[t].length)h+=`<div class="card"><div class="card-hd">${t==='冲'?'🔴 冲一冲':t==='稳'?'🟡 稳一稳':'🟢 保一保'}（${all[t].length}所）</div>${renderTbl(all[t].slice(0,5),t)}</div>`});const ms=ENGINE.genMajors(d.scores);if(ms.length)h+=`<div class="card"><div class="card-hd">💡 科目能力分析</div>${ms.map(x=>`<div style="font-size:12px;padding:3px 0;border-bottom:1px solid #f5f5f5"><span style="font-weight:600">${x.mj}</span> <span style="color:var(--w)">${x.rs}</span></div>`).join('')}</div>`;document.getElementById('out').innerHTML=h||'<div class="advice">暂无结果，请检查数据</div>'}catch(e){document.getElementById('out').innerHTML=`<div class="advice">⚠️ ${e.message}</div>`;console.error(e)}}
-function genAll(){try{const d=getStu();const all=ENGINE.recommend(d.score,d.rank);const combined=[...(all['冲']||[]),...(all['稳']||[]),...(all['保']||[])];let h=`<div class="card"><div class="card-hd">📋 广西公办本科（共${combined.length}所）</div><table class="tbl"><tr><th>院校</th><th>类型</th><th>所在地</th><th>最低位次</th><th>档次</th></tr>${combined.map(x=>`<tr><td><b>${x.n}</b></td><td>${x.t||'—'}</td><td>${x.l}</td><td>${x.rk}</td><td><span class="tag ${x.m>60?'s':x.m>30?'w':'c'}">${x.m>60?'保底':x.m>30?'稳妥':'冲刺'}</span></td></tr>`).join('')}</table></div>`;document.getElementById('out').innerHTML=h}catch(e){document.getElementById('out').innerHTML=`<div class="advice">⚠️ ${e.message}</div>`}}
-// === chat ===
-async function send(){const msg=document.getElementById('chatInp').value.trim();if(!msg)return;document.getElementById('chatInp').value='';const ms=document.getElementById('chatMsgs');ms.innerHTML+=`<div class="chat-msg user"><div class="bub">${msg}</div></div>`;const k=localStorage.getItem('gxApiKey2');if(!k){ms.innerHTML+=`<div class="chat-msg bot"><div class="bub">⚠️ 请在设置中配置API Key</div></div>`;return}const sk=S[curSkill];const d=getStu();const uData=`考生：广西物理类${d.score}分/${d.rank}位次，各科：语文${d.scores.语文}数学${d.scores.数学}英语${d.scores.英语}物理${d.scores.物理}化学${d.scores.化学}生物${d.scores.生物}。`;document.getElementById('sendBtn').disabled=true;try{const r=await fetch('https://api.laizn.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${k}`},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:sk.s+'\n'+uData},{role:'user',content:msg}]})});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();const reply=j.choices?.[0]?.message?.content||'无回复';ms.innerHTML+=`<div class="chat-msg bot"><div class="bub">${reply}</div></div>`}catch(e){ms.innerHTML+=`<div class="chat-msg bot"><div class="bub">⚠️ ${e.message}. 请检查API Key或网络。</div></div>`}document.getElementById('sendBtn').disabled=false;ms.scrollTop=ms.scrollHeight}
+function refreshScores(d){const s=d.scores;document.getElementById('pvScore').textContent=`${d.score} / ${d.rank}`;document.getElementById('scoreBar').innerHTML=Object.entries(s).map(([k,v])=>{const c=v>=80?'g':v>=60?'o':'w';return`<div class="s-item ${c}"><div class="sn">${k}</div><div class="sv">${v}</div></div>`}).join('')}
+function selRole(k){curRole=k;document.querySelectorAll('.r-btn').forEach(b => b.classList.remove('on'));event.target.closest('.r-btn').classList.add('on');document.getElementById('curRoleTag').textContent=ROLES[k].n;document.getElementById('curRoleTag').style.background='var(--pl)'}
+function setMode(m){mode=m;['single','group','rec'].forEach(x=>document.getElementById('mode-'+x).style.display=x===m?'block':'none');document.getElementById('titleTxt').textContent=m==='single'?'💬 单角色对话':m==='group'?'👥 多角色群聊':'📊 冲稳保推荐';document.getElementById('titleSub').style.display=m==='rec'?'none':'block';document.querySelectorAll('.r-btn').forEach(b=>b.classList.remove('on'));if(m!=='rec'){document.querySelector(`.r-btn[onclick*="${m}"]`)?.classList?.add('on')}}
+
 // === settings ===
 function openSettings(){document.getElementById('settingsModal').classList.add('on')}
 function closeSettings(){document.getElementById('settingsModal').classList.remove('on')}
-function saveApiKey(){const k=document.getElementById('apiKey').value;if(k){localStorage.setItem('gxApiKey2',k);document.getElementById('chatInp').disabled=false;document.getElementById('sendBtn').disabled=false;document.getElementById('apiHint').textContent='✅ API已配置';closeSettings();genRec()}else alert('请输入API Key')}
-// Enter
-document.getElementById('chatInp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
+function saveApiKey(){const k=document.getElementById('apiKey').value;if(k){localStorage.setItem('gxV3key',k);localStorage.setItem('gxV3prov',document.getElementById('apiProvider').value);closeSettings();alert('✅ 已保存！')}else alert('请输入 API Key')}
+
+// === 群聊 ===
+function selectAllRoles(){document.querySelectorAll('#grpChecks input').forEach(c=>c.checked=true)}
+function deselectAllRoles(){document.querySelectorAll('#grpChecks input').forEach(c=>c.checked=false)}
+
+function getSelectedRoles(){return Array.from(document.querySelectorAll('#grpChecks input:checked')).map(c=>c.dataset.role)}
+function selectAllRoles(){document.querySelectorAll('#grpChecks input').forEach(c=>c.checked=true)}
+function deselectAllRoles(){document.querySelectorAll('#grpChecks input').forEach(c=>c.checked=false)}
+
+async function startGroupChat(){
+  const msg=document.getElementById('groupInp').value.trim();
+  if(!msg)return;
+  const rks=getSelectedRoles();
+  if(rks.length<2){alert('至少选择2个角色参与讨论');return}
+  const msgs=document.getElementById('groupMsgs');
+  msgs.innerHTML+=`<div class="msg user"><div class="b">${msg}</div></div>`;
+  document.getElementById('groupInp').value='';
+  // 系统提示
+  msgs.innerHTML+=`<div class="msg role"><span class="av" style="background:#aaa">👥</span><div class="b"><span class="rn">系统</span>${rks.length}个角色正在讨论：${rks.map(k=>ROLES[k].n).join('、')}</div></div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+  // 依次让每个角色发言
+  const d=getStu();
+  const userCtx=`考生：广西2026物理类，${d.score}分/${d.rank}位次。各科：语文${d.scores.语文}数学${d.scores.数学}英语${d.scores.英语}物理${d.scores.物理}化学${d.scores.化学}生物${d.scores.生物}。女，普通工人家庭。全国院校均可考虑。\n当前讨论话题：${msg}`;
+  let history=[];
+  for(let i=0;i<rks.length;i++){
+    const rk=rks[i];
+    const role=ROLES[rk];
+    // 显示打字状态
+    const placeholderId='grpTmp'+i;
+    msgs.innerHTML+=`<div class="msg role" id="${placeholderId}"><span class="av" style="background:${role.c}">${role.a}</span><div class="b"><span class="rn">${role.n}</span>⏳ 搜索数据中...</div></div>`;
+    msgs.scrollTop=msgs.scrollHeight;
+    try{
+      const reply=await callAI(role.sys,userCtx+'\n\n【其他角色的观点】\n'+history.map((h,j)=>`${ROLES[rks[j]].n}说：${h}`).join('\n')+'\n\n请你就这个话题给出你的分析。如果涉及具体院校或专业数据，请在内部先联网搜索后给出基于真实数据的回答。');
+      const el=document.getElementById(placeholderId);
+      if(el)el.innerHTML=`<span class="av" style="background:${role.c}">${role.a}</span><div class="b"><span class="rn">${role.n}</span>${reply}</div>`;
+      history.push(reply);
+    }catch(e){
+      const el=document.getElementById(placeholderId);
+      if(el)el.innerHTML=`<span class="av" style="background:${role.c}">${role.a}</span><div class="b"><span class="rn">${role.n}</span>⚠️ 网络错误，跳过</div>`;
+    }
+    msgs.scrollTop=msgs.scrollHeight;
+  }
+  // 总结
+  msgs.innerHTML+=`<div class="msg role"><span class="av" style="background:#aaa">📋</span><div class="b"><span class="rn">系统</span>讨论结束。以上是${rks.length}个角色的观点。你可以继续追问或开始新话题。</div></div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+// === 单角色对话 ===
+async function chatSend(t) {
+  const isGroup=t==='group';
+  if(isGroup){startGroupChat();return}
+  if(isTyping)return;
+  const inp=document.getElementById('singleInp');
+  const msg=inp.value.trim();
+  if(!msg)return;
+  
+  const msgs=document.getElementById('singleMsgs');
+  msgs.innerHTML+=`<div class="msg user"><div class="b">${msg}</div></div>`;
+  inp.value='';
+  msgs.scrollTop=msgs.scrollHeight;
+  
+  const role=ROLES[curRole];
+  const d=getStu();
+  const ctx=`考生：广西2026物理类，${d.score}分/${d.rank}位次。各科：语文${d.scores.语文}数学${d.scores.数学}英语${d.scores.英语}物理${d.scores.物理}化学${d.scores.化学}生物${d.scores.生物}。女，普通工人家庭。全国院校均可报考。`;
+  
+  const tmpId='tmp';
+  msgs.innerHTML+=`<div class="msg role" id="${tmpId}"><span class="av" style="background:${role.c}">${role.a}</span><div class="b"><span class="rn">${role.n}</span>⏳ 正在联网搜索最新数据...</div></div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+  isTyping=true;
+  
+  try{
+    const reply=await callAI(role.sys,ctx+'\n用户问：'+msg+'\n\n请先联网搜索最新真实数据再回答。如果是院校录取数据，搜索"[院校名] 广西 录取 最低分 位次 2025 2026"。如果是就业数据，搜索"[专业名] 就业率 薪资 2025 2026"。');
+    const el=document.getElementById(tmpId);
+    if(el)el.innerHTML=`<span class="av" style="background:${role.c}">${role.a}</span><div class="b"><span class="rn">${role.n}</span>${reply}</div>`;
+  }catch(e){
+    const el=document.getElementById(tmpId);
+    if(el)el.innerHTML=`<span class="av" style="background:${role.c}">${role.a}</span><div class="b"><span class="rn">${role.n}</span>⚠️ 请求失败：${e.message}。请检查API Key和网络。</div>`;
+  }
+  isTyping=false;
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+// === AI 调用 ===
+async function callAI(sysMsg, userMsg) {
+  const apiKey=localStorage.getItem('gxV3key');
+  if(!apiKey)throw new Error('请先配置API Key');
+  const provider=localStorage.getItem('gxV3prov')||'deepseek';
+  const apiBase=provider==='deepseek'?'https://api.deepseek.com/chat/completions':'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+  const model=provider==='deepseek'?'deepseek-chat':'glm-4-flash';
+  
+  const resp=await fetch(apiBase,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
+    body:JSON.stringify({
+      model,
+      messages:[
+        {role:'system',content:sysMsg},
+        {role:'user',content:userMsg}
+      ],
+      max_tokens:2048,
+      temperature:0.7
+    })
+  });
+  
+  if(!resp.ok){const t=await resp.text();throw new Error(`HTTP ${resp.status}: ${t.substring(0,100)}`);}
+  const data=await resp.json();
+  if(provider==='deepseek'){
+    return data.choices?.[0]?.message?.content||'无回复';
+  }else{
+    return data.choices?.[0]?.message?.content||'无回复';
+  }
+}
+
+// === 推荐引擎 ===
+function renderTbl(list,tier){if(!list||!list.length)return'<div style="color:#999;padding:6px">暂无推荐</div>';return`<table class="tbl"><tr><th>院校</th><th>所在地</th><th>类型</th><th>最低位次</th><th>匹配</th></tr>${list.map(x=>`<tr><td><b>${x.n}</b></td><td>${x.l}</td><td>${x.t||'—'}</td><td>${x.rk}</td><td><span class="tag-${tier==='冲'?'c':tier==='稳'?'w':'b'}">${tier} ${Math.round(x.m)}%</span></td></tr>`).join('')}</table>`}
+function genRec(){try{const d=getStu();const all=ENGINE.recommend(d.score,d.rank);let h='';['冲','稳','保'].forEach(t=>{if(all[t]&&all[t].length)h+=`<div class="card"><div class="card-h">${t==='冲'?'🔴 冲一冲':t==='稳'?'🟡 稳一稳':'🟢 保一保'}（${all[t].length}所）</div>${renderTbl(all[t].slice(0,5),t)}</div>`});const ms=ENGINE.genMajors(d.scores);if(ms.length)h+=`<div class="card"><div class="card-h">💡 科目能力分析</div>${ms.map(x=>`<div style="font-size:12px;padding:3px 0;border-bottom:1px solid #f5f5f5"><span style="font-weight:600">${x.mj}</span> <span style="color:var(--w)">${x.rs}</span></div>`).join('')}</div>`;document.getElementById('recOut').innerHTML=h||'<div class="card"><div class="card-h">暂无结果</div></div>'}catch(e){document.getElementById('recOut').innerHTML=`<div class="card"><div class="card-h">⚠️ ${e.message}</div></div>`}}
+function genAll(){try{const d=getStu();const all=ENGINE.recommend(d.score,d.rank);const combined=[...(all['冲']||[]),...(all['稳']||[]),...(all['保']||[])];let h=`<div class="card"><div class="card-h">📋 广西公办本科（共${combined.length}所）</div><table class="tbl"><tr><th>院校</th><th>类型</th><th>所在地</th><th>最低位次</th><th>档次</th></tr>${combined.map(x=>`<tr><td><b>${x.n}</b></td><td>${x.t||'—'}</td><td>${x.l}</td><td>${x.rk}</td><td><span class="tag-${x.m>60?'b':x.m>30?'w':'c'}">${x.m>60?'保底':x.m>30?'稳妥':'冲刺'}</span></td></tr>`).join('')}</table></div>`;document.getElementById('recOut').innerHTML=h}catch(e){document.getElementById('recOut').innerHTML=`<div class="card"><div class="card-h">⚠️ ${e.message}</div></div>`}}
+
+// === Enter键 ===
+document.getElementById('singleInp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSend('single')}});
+document.getElementById('groupInp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();chatSend('group')}});
+
+// === 样式补充 ===
+setTimeout(()=>{const s=document.createElement('style');s.textContent=`.tbl{width:100%;border-collapse:collapse;font-size:12px}.tbl th{text-align:left;padding:5px;font-weight:600;color:#888;font-size:10px;border-bottom:1px solid #f0f0f0}.tbl td{padding:6px 5px;border-bottom:1px solid #f5f5f5}.tag-c{background:#ffe0e0;color:#c0392b;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600}.tag-w{background:#fef3cd;color:#856404;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600}.tag-b{background:#d4edda;color:#155724;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600}`;document.head.appendChild(s)},100);
 </script>
 </body>
 </html>
